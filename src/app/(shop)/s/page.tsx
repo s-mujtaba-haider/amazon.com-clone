@@ -181,8 +181,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </div>
           ) : (
             <div className="product-grid">
-              {shown.map(p => (
-                <ProductCard key={p.id} p={p} deliveryLabel={deliveryLabel} />
+              {shown.map((p, i) => (
+                <ProductCard key={p.id} p={p} deliveryLabel={deliveryLabel} index={i} priority={i < 6} />
               ))}
             </div>
           )}

@@ -57,6 +57,13 @@ export function bestSellers(limit = 12) {
   return [...products].sort((a, b) => b.rating * b.reviews.length - a.rating * a.reviews.length || b.rating - a.rating).slice(0, limit);
 }
 
+/** Most-stocked brands, for the brand ticker. */
+export function brands(limit = 20) {
+  const counts = new Map<string, number>();
+  for (const p of products) if (p.brand) counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
+  return [...counts].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([b]) => b);
+}
+
 export function related(p: Product, limit = 10) {
   const same = products.filter(x => x.category === p.category && x.id !== p.id);
   const tagged = products.filter(x => x.category !== p.category && x.tags.some(t => p.tags.includes(t)));

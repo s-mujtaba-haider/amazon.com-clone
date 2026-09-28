@@ -4,13 +4,13 @@ import { listPrice, money, priceParts } from '@/lib/format';
 import { HeartButton } from '@/components/wishlist/HeartButton';
 import { QuickAdd } from './QuickAdd';
 
-export function ProductCard({ p, deliveryLabel, priority = false }: { p: Product; deliveryLabel: string; priority?: boolean }) {
+export function ProductCard({ p, deliveryLabel, priority = false, index = 0 }: { p: Product; deliveryLabel: string; priority?: boolean; index?: number }) {
   const isDeal = p.discountPercentage >= 10;
   const { whole, cents } = priceParts(p.price);
   const cartProduct = { id: p.id, title: p.title, price: p.price, thumbnail: p.thumbnail, stock: p.stock, brand: p.brand };
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-soft)] ring-1 ring-black/[.03] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+    <article data-reveal style={{ '--reveal-delay': `${(index % 6) * 60}ms` } as React.CSSProperties} className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-soft)] ring-1 ring-black/[.03] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
       <div className="relative">
         <Link
           href={`/dp/${p.id}`}

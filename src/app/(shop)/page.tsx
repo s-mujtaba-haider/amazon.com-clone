@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { HeroCarousel, type Slide } from '@/components/home/HeroCarousel';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductRail } from '@/components/product/ProductRail';
-import { bestSellers, byCategory, categoryLabel, getProduct, getProducts, topDeals } from '@/lib/products';
+import { bestSellers, brands, byCategory, categoryLabel, getProduct, getProducts, topDeals } from '@/lib/products';
 import { deliveryDate } from '@/lib/format';
 import { currentUser } from '@/lib/session';
 
@@ -73,6 +73,7 @@ export default async function Home() {
   const best = bestSellers(24);
   const dealHero = deals[0];
   const newTech = getProduct(160)!;
+  const BRANDS = brands(24);
 
   return (
     <div className="gutter space-y-8 py-4 sm:space-y-12 sm:py-6">
@@ -88,7 +89,7 @@ export default async function Home() {
               <span className="mt-2 inline-block text-sm font-bold text-deal group-hover:underline sm:mt-3">Shop deals →</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+            <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 animate-[float_6s_ease-in-out_infinite] object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
           </Link>
           <Link href="/s?category=tablets" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-3 p-4 text-white sm:p-6">
             <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
@@ -98,15 +99,15 @@ export default async function Home() {
               <span className="mt-2 inline-block text-sm font-bold text-[#b9a8ff] group-hover:underline sm:mt-3">Explore →</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={newTech.thumbnail} alt="" className="absolute -right-2 -bottom-2 h-24 w-24 object-contain drop-shadow-2xl transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+            <img src={newTech.thumbnail} alt="" className="absolute -right-2 -bottom-2 h-24 w-24 animate-[float_7s_ease-in-out_.5s_infinite] object-contain drop-shadow-2xl transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
           </Link>
         </div>
       </div>
 
       {/* Perks strip */}
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
-        {PERKS.map(p => (
-          <li key={p.title} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] sm:p-4">
+        {PERKS.map((p, i) => (
+          <li key={p.title} data-reveal style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 sm:h-12 sm:w-12">
               <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-brand stroke-2 sm:h-6 sm:w-6">
                 <path d={p.d} strokeLinecap="round" strokeLinejoin="round" />
@@ -120,14 +121,33 @@ export default async function Home() {
         ))}
       </ul>
 
+      {/* Brand ticker */}
+      <section aria-label="Popular brands" data-reveal className="group relative overflow-hidden rounded-2xl bg-white py-4 shadow-[var(--shadow-soft)]">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
+        <div className="flex w-max animate-[marquee_40s_linear_infinite] gap-3 group-hover:[animation-play-state:paused]">
+          {[...BRANDS, ...BRANDS].map((b, i) => (
+            <Link
+              key={i}
+              href={`/s?brand=${encodeURIComponent(b)}`}
+              tabIndex={i >= BRANDS.length ? -1 : undefined}
+              aria-hidden={i >= BRANDS.length || undefined}
+              className="rounded-full bg-[#f5f6fa] px-5 py-2 text-sm font-bold whitespace-nowrap text-[#475569] transition hover:bg-brand hover:text-white"
+            >
+              {b}
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Categories */}
-      <section>
+      <section data-reveal>
         <SectionHead title="Shop by category" subtitle="Everything you need, one tap away" href="/s" cta="All products" />
         <ul className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2.5 sm:grid-cols-[repeat(auto-fill,minmax(128px,1fr))] sm:gap-4">
-          {CATEGORY_TILES.map(({ slug, tint }) => {
+          {CATEGORY_TILES.map(({ slug, tint }, i) => {
             const p = byCategory(slug, 1)[0];
             return (
-              <li key={slug}>
+              <li key={slug} data-reveal style={{ '--reveal-delay': `${(i % 9) * 40}ms` } as React.CSSProperties}>
                 <Link href={`/s?category=${slug}`} className="group flex flex-col items-center gap-2 rounded-2xl bg-white p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-3">
                   <span className="flex aspect-square w-full items-center justify-center rounded-xl" style={{ background: tint }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -142,19 +162,19 @@ export default async function Home() {
       </section>
 
       {/* Deals rail */}
-      <section className="rounded-3xl bg-gradient-to-br from-[#fff5f0] via-white to-[#f4f1ff] p-3 ring-1 ring-black/[.03] sm:p-6">
+      <section data-reveal className="rounded-3xl bg-gradient-to-br from-[#fff5f0] via-white to-[#f4f1ff] p-3 ring-1 ring-black/[.03] sm:p-6">
         <SectionHead title="🔥 Today's biggest deals" subtitle="Sorted by discount, refreshed daily" href="/s?deals=1&sort=discount" />
         <ProductRail>
           {deals.map((p, i) => (
-            <ProductCard key={p.id} p={p} deliveryLabel={delivery} priority={i < 4} />
+            <ProductCard key={p.id} p={p} deliveryLabel={delivery} priority={i < 4} index={i} />
           ))}
         </ProductRail>
       </section>
 
       {/* Spotlight banners */}
       <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
-        {SPOTLIGHTS.map(s => (
-          <Link key={s.title} href={s.href} className="group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-3xl p-5 text-white sm:min-h-[220px] sm:p-6" style={{ background: s.bg }}>
+        {SPOTLIGHTS.map((s, i) => (
+          <Link key={s.title} href={s.href} data-reveal style={{ background: s.bg, '--reveal-delay': `${i * 100}ms` } as React.CSSProperties} className="group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-3xl p-5 text-white transition hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:min-h-[220px] sm:p-6">
             <div className="relative z-10 max-w-[55%]">
               <h3 className="text-xl leading-tight font-extrabold sm:text-2xl">{s.title}</h3>
               <p className="mt-1.5 text-sm text-white/75">{s.text}</p>
@@ -182,16 +202,16 @@ export default async function Home() {
       <section>
         <SectionHead title="Best sellers" subtitle="What shoppers love right now" href="/s?sort=rating" />
         <div className="product-grid">
-          {best.map(p => (
-            <ProductCard key={p.id} p={p} deliveryLabel={delivery} />
+          {best.map((p, i) => (
+            <ProductCard key={p.id} p={p} deliveryLabel={delivery} index={i} />
           ))}
         </div>
       </section>
 
       {/* Guest CTA */}
       {!user && (
-        <section className="relative overflow-hidden rounded-3xl bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
-          <span aria-hidden className="absolute -top-20 -right-10 h-72 w-72 rounded-full bg-brand/40 blur-3xl" />
+        <section data-reveal className="relative overflow-hidden rounded-3xl bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
+          <span aria-hidden className="absolute -top-20 -right-10 h-72 w-72 animate-[float_9s_ease-in-out_infinite] rounded-full bg-brand/40 blur-3xl" />
           <span aria-hidden className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-coral/30 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div>
@@ -216,11 +236,11 @@ export default async function Home() {
         { title: 'Fresh groceries', href: '/s?category=groceries', items: byCategory('groceries', 16) },
         { title: 'Style for everyone', href: '/s?category=womens-dresses', items: [...byCategory('womens-dresses', 4), ...byCategory('mens-shirts', 4), ...byCategory('womens-shoes', 4), ...byCategory('mens-shoes', 4)] },
       ].map(r => (
-        <section key={r.title}>
+        <section key={r.title} data-reveal>
           <SectionHead title={r.title} href={r.href} />
           <ProductRail>
-            {r.items.map(p => (
-              <ProductCard key={p.id} p={p} deliveryLabel={delivery} />
+            {r.items.map((p, i) => (
+              <ProductCard key={p.id} p={p} deliveryLabel={delivery} index={i} />
             ))}
           </ProductRail>
         </section>

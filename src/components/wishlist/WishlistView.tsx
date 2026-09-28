@@ -9,7 +9,9 @@ export function WishlistView() {
   const { items, ready, remove } = useWishlist();
   const { add } = useCart();
 
-  if (!ready) return <div className="gutter h-96 animate-pulse py-6" aria-busy="true" />;
+  if (!ready) return <div className="gutter py-6" aria-busy="true">
+        <div className="skeleton h-80 rounded-3xl" />
+      </div>;
 
   return (
     <div className="gutter py-6 sm:py-8">

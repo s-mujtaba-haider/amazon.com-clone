@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { categories, categoryLabel } from '@/lib/products';
+import { byCategory, categories, categoryLabel } from '@/lib/products';
 import { currentUser } from '@/lib/session';
 import { Logo } from './Logo';
 import { SearchBar } from './SearchBar';
@@ -12,7 +12,7 @@ import { NavChips } from './NavChips';
 
 export async function Header() {
   const user = await currentUser();
-  const cats = categories.map(c => ({ slug: c, label: categoryLabel(c) }));
+  const cats = categories.map(c => ({ slug: c, label: categoryLabel(c), thumb: byCategory(c, 1)[0]?.thumbnail }));
 
   return (
     <header className="sticky top-0 z-40 bg-ink/95 text-white shadow-[0_1px_0_rgba(255,255,255,.06)] backdrop-blur supports-[backdrop-filter]:bg-ink/85">

@@ -48,7 +48,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           <span aria-hidden className="absolute -bottom-28 left-1/3 h-72 w-72 rounded-full bg-black/10 blur-2xl" />
 
           <div className="relative flex h-full items-center justify-between gap-4 px-6 sm:px-12 xl:px-16">
-            <div className="max-w-[58%] text-white sm:max-w-lg">
+            <div key={idx === i ? `on-${i}` : `off-${idx}`} className="max-w-[58%] text-white sm:max-w-lg [&>*]:animate-[rise_.6s_cubic-bezier(.2,.8,.2,1)_both] [&>*:nth-child(2)]:[animation-delay:80ms] [&>*:nth-child(3)]:[animation-delay:160ms] [&>*:nth-child(4)]:[animation-delay:240ms]">
               <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold tracking-wider uppercase backdrop-blur sm:text-xs">{s.eyebrow}</span>
               <h2 className="mt-2 text-2xl leading-[1.1] font-extrabold tracking-tight sm:mt-3 sm:text-4xl xl:text-5xl 2xl:text-6xl">{s.title}</h2>
               <p className="mt-2 text-[13px] text-white/85 sm:mt-3 sm:text-lg">{s.subtitle}</p>
@@ -68,7 +68,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
                   src={src}
                   alt=""
                   className={`rounded-3xl bg-white/95 object-contain p-3 shadow-2xl ${
-                    k === 0 ? 'relative z-10 h-28 w-28 sm:h-48 sm:w-48 xl:h-64 xl:w-64' : k === 1 ? 'ml-[-2rem] hidden h-40 w-40 rotate-6 sm:block xl:h-52 xl:w-52' : 'ml-[-1.5rem] hidden h-44 w-44 -rotate-3 2xl:block'
+                    k === 0 ? 'relative z-10 h-28 w-28 animate-[float_6s_ease-in-out_infinite] sm:h-48 sm:w-48 xl:h-64 xl:w-64' : k === 1 ? 'ml-[-2rem] hidden h-40 w-40 rotate-6 animate-[float_7s_ease-in-out_1s_infinite] sm:block xl:h-52 xl:w-52' : 'ml-[-1.5rem] hidden h-44 w-44 -rotate-3 2xl:block'
                   }`}
                 />
               ))}

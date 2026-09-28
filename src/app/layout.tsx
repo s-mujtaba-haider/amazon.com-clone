@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { AddedToCartToast } from '@/components/cart/AddedToCartToast';
 import { WishlistProvider } from '@/components/wishlist/WishlistProvider';
+import { RevealRoot } from '@/components/motion/RevealRoot';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-jakarta' });
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <WishlistProvider>
             {children}
             <AddedToCartToast />
+            <RevealRoot />
           </WishlistProvider>
         </CartProvider>
       </body>

@@ -9,7 +9,9 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
   const { items, saved, ready, count, subtotal, setQty, remove, saveForLater, moveToCart, removeSaved } = useCart();
 
   if (!ready) {
-    return <div className="gutter h-96 animate-pulse py-6" aria-busy="true" />;
+    return <div className="gutter py-6" aria-busy="true">
+        <div className="skeleton h-80 rounded-3xl" />
+      </div>;
   }
 
   const toFree = FREE_SHIPPING_MIN - subtotal;

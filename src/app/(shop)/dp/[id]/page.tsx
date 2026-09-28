@@ -119,8 +119,8 @@ export default async function ProductPage({ params }: { params: Params }) {
       <section className="mt-12">
         <h2 className="section-title mb-4">You may also like</h2>
         <ProductRail>
-          {related(p, 16).map(r => (
-            <ProductCard key={r.id} p={r} deliveryLabel={deliveryDate(2)} />
+          {related(p, 16).map((r, i) => (
+            <ProductCard key={r.id} p={r} deliveryLabel={deliveryDate(2)} index={i} />
           ))}
         </ProductRail>
       </section>
