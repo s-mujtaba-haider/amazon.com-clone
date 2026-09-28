@@ -1,7 +1,7 @@
 'use server';
 
 import { randomInt } from 'node:crypto';
-import { createOrder } from '@/lib/db';
+import { StorageNotConfiguredError, createOrder } from '@/lib/db';
 import { FREE_SHIPPING_MIN, deliveryDate } from '@/lib/format';
 import { getProduct } from '@/lib/products';
 import { currentUser } from '@/lib/session';
@@ -44,18 +44,26 @@ export async function placeOrder(input: {
   const tax = round(subtotal * 0.08);
   const id = `${randomInt(100, 999)}-${randomInt(1000000, 9999999)}-${randomInt(1000000, 9999999)}`;
 
-  createOrder({
-    id,
-    userId: user.id,
-    items,
-    subtotal,
-    shipping,
-    tax,
-    total: round(subtotal + shipping + tax),
-    address: input.address,
-    payment: input.payment,
-    createdAt: new Date().toISOString(),
-    deliverBy: deliveryDate(3),
-  });
+  try {
+    await createOrder({
+      id,
+      userId: user.id,
+      items,
+      subtotal,
+      shipping,
+      tax,
+      total: round(subtotal + shipping + tax),
+      address: input.address,
+      payment: input.payment,
+      createdAt: new Date().toISOString(),
+      deliverBy: deliveryDate(3),
+    });
+  } catch (e) {
+    console.error('[orders] storage error', e);
+    return {
+      ok: false,
+      error: e instanceof StorageNotConfiguredError ? 'Orders are temporarily unavailable: storage is not set up on this deployment.' : 'We could not save your order. Please try again.',
+    };
+  }
   return { ok: true, id };
 }

@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: 'Your Orders' };
 export default async function OrdersPage() {
   const user = await currentUser();
   if (!user) redirect('/signin?next=/orders');
-  const orders = ordersFor(user.id);
+  const orders = await ordersFor(user.id);
 
   return (
     <div className="gutter max-w-[1280px] py-6 sm:py-8">

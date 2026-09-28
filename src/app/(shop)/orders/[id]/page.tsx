@@ -13,7 +13,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   const [{ id }, { placed }] = await Promise.all([params, searchParams]);
   const user = await currentUser();
   if (!user) redirect(`/signin?next=/orders/${id}`);
-  const o = getOrder(user.id, id);
+  const o = await getOrder(user.id, id);
   if (!o) notFound();
 
   const a = o.address;

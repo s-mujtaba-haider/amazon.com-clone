@@ -33,7 +33,7 @@ export const currentUser = cache(async () => {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, secret);
-    const user = payload.sub ? findUserById(payload.sub) : null;
+    const user = payload.sub ? await findUserById(payload.sub) : null;
     if (!user) return null;
     return { id: user.id, name: user.name, email: user.email };
   } catch {

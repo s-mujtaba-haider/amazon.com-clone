@@ -16,8 +16,23 @@ npm run dev        # http://localhost:3000
 # or: npm run build && npm start
 ```
 
-Node 20+. No database or env setup needed: users and orders are written to `data/db.json`
-(gitignored) on first sign-up. Set `AUTH_SECRET` in production.
+Node 20+. No database or env setup needed locally: users and orders are written to
+`data/db.json` (gitignored) on first sign-up.
+
+## Deploy on Vercel
+
+Vercel's filesystem is read-only, so deployed accounts and orders live in **Upstash Redis**
+(free tier, added from inside Vercel; no separate account needed):
+
+1. Vercel project → **Storage** → **Create** → **Upstash for Redis** (Marketplace) → free plan →
+   connect it to this project. Vercel adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` automatically.
+2. Project → **Settings → Environment Variables** → add `AUTH_SECRET` = a long random string
+   (e.g. output of `openssl rand -base64 32`). It signs the login cookie.
+3. **Redeploy** (env vars only apply to new deployments).
+
+`src/lib/db.ts` uses Redis whenever those variables are present and the JSON file otherwise.
+On Vercel without Redis, sign-in / sign-up / checkout show a clear "storage is not set up"
+message instead of failing silently.
 
 ## What works (the full buying loop)
 
