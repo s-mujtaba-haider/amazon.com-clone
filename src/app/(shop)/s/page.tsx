@@ -66,12 +66,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     <div className="space-y-5">
         <FilterGroup title="Department">
           {category && (
-            <Link href={href({ category: undefined, brand: undefined })} className="mb-1 block text-xs hover:text-link-hover">
+            <Link href={href({ category: undefined, brand: undefined })} className="mb-1 block text-xs hover:text-brand">
               ‹ Any Department
             </Link>
           )}
           {categories.map(([c, n]) => (
-            <Link key={c} href={href({ category: c, brand: undefined })} className={`block py-0.5 hover:text-link-hover ${c === category ? 'font-bold' : ''}`}>
+            <Link key={c} href={href({ category: c, brand: undefined })} className={`block py-0.5 hover:text-brand ${c === category ? 'font-bold text-brand' : ''}`}>
               {categoryLabel(c)} <span className="text-muted">({n})</span>
             </Link>
           ))}
@@ -79,7 +79,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
         <FilterGroup title="Customer Reviews">
           {[4, 3, 2].map(r => (
-            <Link key={r} href={href({ rating: rating === r ? undefined : r })} className={`flex items-center gap-1 py-0.5 hover:text-link-hover ${rating === r ? 'font-bold' : ''}`}>
+            <Link key={r} href={href({ rating: rating === r ? undefined : r })} className={`flex items-center gap-1 py-0.5 hover:text-brand ${rating === r ? 'font-bold' : ''}`}>
               <Stars rating={r} size={16} /> & Up
             </Link>
           ))}
@@ -88,7 +88,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         {brands.length > 0 && (
           <FilterGroup title="Brands">
             {brands.map(([b]) => (
-              <Link key={b} href={href({ brand: brand === b ? undefined : b })} className="flex items-center gap-2 py-0.5 hover:text-link-hover">
+              <Link key={b} href={href({ brand: brand === b ? undefined : b })} className="flex items-center gap-2 py-0.5 hover:text-brand">
                 <span aria-hidden className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${brand === b ? 'border-link bg-link text-[10px] text-white' : 'border-[#888]'}`}>
                   {brand === b && '✓'}
                 </span>
@@ -102,7 +102,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           {PRICE_BANDS.map(([t, lo, hi]) => {
             const on = min === lo && max === hi;
             return (
-              <Link key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} className={`block py-0.5 hover:text-link-hover ${on ? 'font-bold' : ''}`}>
+              <Link key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} className={`block py-0.5 hover:text-brand ${on ? 'font-bold' : ''}`}>
                 {t}
               </Link>
             );
@@ -118,7 +118,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </FilterGroup>
 
         <FilterGroup title="Deals & Discounts">
-          <Link href={href({ deals: deals ? undefined : '1' })} className={`block py-0.5 hover:text-link-hover ${deals ? 'font-bold' : ''}`}>
+          <Link href={href({ deals: deals ? undefined : '1' })} className={`block py-0.5 hover:text-brand ${deals ? 'font-bold' : ''}`}>
             All Discounts
           </Link>
         </FilterGroup>
@@ -127,16 +127,16 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2 text-sm shadow-sm">
-        <p>
+      <div className="gutter flex flex-wrap items-center justify-between gap-2 pt-4 pb-2 text-sm sm:pt-6">
+        <p className="text-muted">
           {results.length === 0 ? 'No' : `${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, results.length)} of`} {results.length > 0 && results.length} results for{' '}
-          <span className="font-bold text-link-hover">{label}</span>
+          <span className="font-bold text-ink">{label}</span>
         </p>
         <SortSelect value={sort} />
       </div>
 
-      <div className="mx-auto flex max-w-[1500px] gap-6 px-4 py-4">
-        <aside className="hidden w-52 shrink-0 lg:w-60 space-y-5 text-sm md:block" aria-label="Filters">
+      <div className="gutter flex gap-6 pb-10 xl:gap-8">
+        <aside className="sticky top-[132px] hidden max-h-[calc(100dvh-148px)] w-56 shrink-0 self-start overflow-y-auto rounded-2xl bg-white p-5 text-sm shadow-[var(--shadow-soft)] md:block lg:w-64" aria-label="Filters">
           {filters}
         </aside>
 
@@ -147,11 +147,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {filters}
             </FilterSheet>
             {categories.slice(0, 12).map(([c]) => (
-              <Link key={c} href={href({ category: c === category ? undefined : c, brand: undefined })} className={`shrink-0 rounded-full border px-3 py-1 text-sm ${c === category ? 'border-link bg-[#edfdff] font-bold' : 'border-line bg-white'}`}>
+              <Link key={c} href={href({ category: c === category ? undefined : c, brand: undefined })} className={`chip ${c === category ? 'chip-on' : ''}`}>
                 {categoryLabel(c)}
               </Link>
             ))}
-            <Link href={href({ deals: deals ? undefined : '1' })} className={`shrink-0 rounded-full border px-3 py-1 text-sm ${deals ? 'border-link bg-[#edfdff] font-bold' : 'border-line bg-white'}`}>
+            <Link href={href({ deals: deals ? undefined : '1' })} className={`chip ${deals ? 'chip-on' : ''}`}>
               Deals
             </Link>
           </div>
@@ -159,7 +159,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           {activeFilters.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
               {activeFilters.map(f => (
-                <Link key={f.text} href={f.clear} className="flex items-center gap-1 rounded-full border border-line bg-[#f0f2f2] px-3 py-1 hover:bg-[#e3e6e6]">
+                <Link key={f.text} href={f.clear} className="chip chip-on">
                   {f.text} <span aria-label="remove filter">×</span>
                 </Link>
               ))}
@@ -169,11 +169,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </div>
           )}
 
-          <h1 className="mb-1 text-xl font-bold">Results</h1>
-          <p className="mb-4 text-sm text-muted">Check each product page for other buying options.</p>
+          <h1 className="mb-4 text-2xl font-extrabold tracking-tight sm:text-3xl">{q ? <>Results for &ldquo;{q}&rdquo;</> : category ? categoryLabel(category) : deals ? "Today's Deals" : 'All products'}</h1>
 
           {shown.length === 0 ? (
-            <div className="rounded-md border border-line p-8 text-center">
+            <div className="rounded-3xl bg-white p-10 text-center shadow-[var(--shadow-soft)]">
               <p className="text-lg font-bold">No results for {label}.</p>
               <p className="mt-2 text-sm text-muted">Try checking your spelling, using more general terms, or removing filters.</p>
               <Link href="/s" className="btn-cta mt-4">
@@ -181,7 +180,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            <div className="product-grid">
               {shown.map(p => (
                 <ProductCard key={p.id} p={p} deliveryLabel={deliveryLabel} />
               ))}
@@ -190,26 +189,26 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
           {pages > 1 && (
             <nav aria-label="Pagination" className="mt-8 flex justify-center">
-              <ul className="flex overflow-hidden rounded-md border border-line text-sm">
+              <ul className="flex flex-wrap justify-center gap-1.5 text-sm">
                 <li>
                   {page > 1 ? (
-                    <Link className="block px-4 py-2 hover:bg-[#f7fafa]" href={href({ page: page - 1 })}>‹ Previous</Link>
+                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] hover:bg-brand-50" href={href({ page: page - 1 })}>‹ Previous</Link>
                   ) : (
-                    <span className="block px-4 py-2 text-[#aaa]">‹ Previous</span>
+                    <span className="block rounded-xl px-4 py-2 text-[#b0b7c5]">‹ Previous</span>
                   )}
                 </li>
                 {Array.from({ length: pages }, (_, i) => i + 1).map(n => (
-                  <li key={n} className="border-l border-line">
-                    <Link aria-current={n === page ? 'page' : undefined} className={`block px-4 py-2 ${n === page ? 'border border-[#111] font-bold' : 'hover:bg-[#f7fafa]'}`} href={href({ page: n })}>
+                  <li key={n}>
+                    <Link aria-current={n === page ? 'page' : undefined} className={`block min-w-10 rounded-xl px-3.5 py-2 text-center font-semibold ${n === page ? 'bg-ink text-white' : 'bg-white shadow-[var(--shadow-soft)] hover:bg-brand-50'}`} href={href({ page: n })}>
                       {n}
                     </Link>
                   </li>
                 ))}
-                <li className="border-l border-line">
+                <li>
                   {page < pages ? (
-                    <Link className="block px-4 py-2 hover:bg-[#f7fafa]" href={href({ page: page + 1 })}>Next ›</Link>
+                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] hover:bg-brand-50" href={href({ page: page + 1 })}>Next ›</Link>
                   ) : (
-                    <span className="block px-4 py-2 text-[#aaa]">Next ›</span>
+                    <span className="block rounded-xl px-4 py-2 text-[#b0b7c5]">Next ›</span>
                   )}
                 </li>
               </ul>
@@ -224,7 +223,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="mb-1 font-bold">{title}</h2>
+      <h2 className="mb-2 text-xs font-bold tracking-wider text-muted uppercase">{title}</h2>
       {children}
     </div>
   );

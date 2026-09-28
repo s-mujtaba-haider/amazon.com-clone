@@ -19,7 +19,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
-                className={`flex h-14 w-14 items-center justify-center rounded-md border p-1 ${i === active ? 'border-[#e77600] shadow-[0_0_3px_2px_rgba(228,121,17,.5)]' : 'border-[#bbb]'}`}
+                className={`flex h-16 w-16 items-center justify-center rounded-xl bg-white p-1.5 shadow-[var(--shadow-soft)] transition ${i === active ? 'ring-2 ring-brand' : 'ring-1 ring-line hover:ring-brand/40'}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt="" className="max-h-full max-w-full object-contain" />
@@ -29,7 +29,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
         </ul>
       )}
       <div
-        className="relative flex aspect-square max-h-[min(80vw,520px)] flex-1 cursor-zoom-in items-center justify-center overflow-hidden"
+        className="relative flex aspect-square max-h-[min(90vw,620px)] flex-1 cursor-zoom-in items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-b from-white to-[#eef0f7] p-6 shadow-[var(--shadow-soft)]"
         onMouseMove={e => {
           const r = e.currentTarget.getBoundingClientRect();
           setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
@@ -40,7 +40,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
         <img
           src={images[active]}
           alt={title}
-          className="max-h-full max-w-full object-contain transition-transform duration-100"
+          className="max-h-full max-w-full object-contain mix-blend-multiply transition-transform duration-100"
           style={zoom ? { transform: 'scale(1.8)', transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
         />
       </div>

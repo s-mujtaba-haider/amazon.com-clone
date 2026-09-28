@@ -1,114 +1,230 @@
 import Link from 'next/link';
 import { HeroCarousel, type Slide } from '@/components/home/HeroCarousel';
-import { ProductCarousel } from '@/components/product/ProductCarousel';
-import { bestSellers, byCategory, categoryLabel, getProducts, topDeals } from '@/lib/products';
+import { ProductCard } from '@/components/product/ProductCard';
+import { ProductRail } from '@/components/product/ProductRail';
+import { bestSellers, byCategory, categoryLabel, getProduct, getProducts, topDeals } from '@/lib/products';
+import { deliveryDate } from '@/lib/format';
 import { currentUser } from '@/lib/session';
 
 const thumbs = (ids: number[]) => getProducts(ids).map(p => p.thumbnail);
 
 const SLIDES: Slide[] = [
-  { title: 'Up to 30% off laptops & tablets', subtitle: 'Power for work and play, delivered fast.', cta: 'Shop tech deals', href: '/s?category=laptops', bg: 'linear-gradient(120deg,#0f3d6e,#1f6fb2 55%,#5fb3e8)', images: thumbs([78, 80, 82]) },
-  { title: 'Fresh groceries, delivered', subtitle: 'Pantry staples and fresh picks, right to your door.', cta: 'Shop Grocery', href: '/s?category=groceries', bg: 'linear-gradient(120deg,#1d5e34,#3a9a4f 55%,#9bd26f)', images: thumbs([16, 21, 25]) },
-  { title: 'Refresh your space', subtitle: 'Furniture and décor that feel like home.', cta: 'Shop Home', href: '/s?category=furniture', bg: 'linear-gradient(120deg,#6b3b20,#b06a3b 55%,#e7b47f)', images: thumbs([11, 12, 13]) },
-  { title: 'Beauty best sellers', subtitle: 'Top-rated makeup, fragrance and skin care.', cta: 'Shop Beauty', href: '/s?category=beauty', bg: 'linear-gradient(120deg,#7a1f4d,#c2417f 55%,#f3a0c4)', images: thumbs([1, 118, 8]) },
+  { eyebrow: 'Tech week', title: 'Laptops that keep up with you', subtitle: 'Up to 30% off top brands. Free delivery over $35.', cta: 'Shop laptops', href: '/s?category=laptops', bg: 'linear-gradient(125deg,#2a1b8f 0%,#5b3df5 55%,#9b7bff 100%)', images: thumbs([78, 80, 82]) },
+  { eyebrow: 'Fresh daily', title: 'Groceries at your door', subtitle: 'Fresh produce and pantry staples, delivered in days.', cta: 'Shop grocery', href: '/s?category=groceries', bg: 'linear-gradient(125deg,#064e3b 0%,#0e9f6e 55%,#6ee7b7 100%)', images: thumbs([16, 21, 25]) },
+  { eyebrow: 'Home refresh', title: 'Make your space yours', subtitle: 'Furniture and décor picked for comfort and style.', cta: 'Shop home', href: '/s?category=furniture', bg: 'linear-gradient(125deg,#7c2d12 0%,#ea580c 55%,#fdba74 100%)', images: thumbs([11, 12, 13]) },
+  { eyebrow: 'Beauty edit', title: 'Glow up, for less', subtitle: 'Best-selling makeup, fragrance and skin care.', cta: 'Shop beauty', href: '/s?category=beauty', bg: 'linear-gradient(125deg,#831843 0%,#db2777 55%,#f9a8d4 100%)', images: thumbs([1, 118, 8]) },
 ];
 
-const QUADS = [
-  { title: 'Upgrade your phone', cats: ['smartphones'], href: '/s?category=smartphones' },
-  { title: 'Shop fashion for less', cats: ['womens-dresses', 'mens-shirts', 'womens-shoes', 'mens-shoes'], href: '/s?category=womens-dresses' },
-  { title: 'Kitchen favorites', cats: ['kitchen-accessories'], href: '/s?category=kitchen-accessories' },
-  { title: 'Watches & jewelry', cats: ['womens-watches', 'mens-watches', 'womens-jewellery', 'sunglasses'], href: '/s?category=womens-watches' },
-  { title: 'Get fit at home', cats: ['sports-accessories'], href: '/s?category=sports-accessories' },
-  { title: 'Skin care essentials', cats: ['skin-care', 'fragrances'], href: '/s?category=skin-care' },
-  { title: 'Bags for every day', cats: ['womens-bags'], href: '/s?category=womens-bags' },
-  { title: 'Mobile accessories', cats: ['mobile-accessories'], href: '/s?category=mobile-accessories' },
+const CATEGORY_TILES: { slug: string; tint: string }[] = [
+  { slug: 'smartphones', tint: '#eef2ff' },
+  { slug: 'laptops', tint: '#ecfeff' },
+  { slug: 'tablets', tint: '#f0f9ff' },
+  { slug: 'mobile-accessories', tint: '#f5f3ff' },
+  { slug: 'groceries', tint: '#ecfdf5' },
+  { slug: 'beauty', tint: '#fdf2f8' },
+  { slug: 'skin-care', tint: '#fff7ed' },
+  { slug: 'fragrances', tint: '#fef2f2' },
+  { slug: 'furniture', tint: '#fefce8' },
+  { slug: 'home-decoration', tint: '#f7fee7' },
+  { slug: 'kitchen-accessories', tint: '#fff1f2' },
+  { slug: 'womens-dresses', tint: '#fdf4ff' },
+  { slug: 'mens-shirts', tint: '#eff6ff' },
+  { slug: 'womens-shoes', tint: '#fff7ed' },
+  { slug: 'mens-watches', tint: '#f8fafc' },
+  { slug: 'sunglasses', tint: '#f0fdfa' },
+  { slug: 'sports-accessories', tint: '#f0fdf4' },
+  { slug: 'vehicle', tint: '#f1f5f9' },
 ];
 
-const CATEGORY_ROW = ['smartphones', 'laptops', 'groceries', 'beauty', 'womens-dresses', 'mens-shoes', 'furniture', 'kitchen-accessories', 'sports-accessories', 'fragrances', 'womens-watches', 'sunglasses', 'tablets', 'vehicle'];
+const PERKS = [
+  { title: 'Free delivery', text: 'On orders over $35', d: 'M3 7h11v9H3zM14 10h4l3 3v3h-7zM7 19.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm10 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' },
+  { title: '30-day returns', text: 'Change your mind, no stress', d: 'M4 4v6h6M20 20v-6h-6M5 15a8 8 0 0 0 14 2M19 9A8 8 0 0 0 5 7' },
+  { title: 'Secure checkout', text: 'Encrypted, private, safe', d: 'M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6zM9 12l2 2 4-4' },
+  { title: 'Real reviews', text: 'Ratings from verified buyers', d: 'm12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z' },
+];
 
-function quadItems(cats: string[]) {
-  if (cats.length === 1) return byCategory(cats[0], 4);
-  return cats.map(c => byCategory(c, 1)[0]).filter(Boolean);
+const SPOTLIGHTS = [
+  { title: 'Upgrade your phone', text: 'Flagships and budget heroes, all in one place.', href: '/s?category=smartphones', bg: 'linear-gradient(135deg,#0b1220,#1d2742)', ids: [124, 133, 129] },
+  { title: 'Kitchen favorites', text: 'Tools and gadgets that make cooking fun.', href: '/s?category=kitchen-accessories', bg: 'linear-gradient(135deg,#7c2d12,#c2410c)', ids: [51, 66, 71] },
+  { title: 'Accessorize', text: 'Watches, bags and sunglasses to finish the look.', href: '/s?category=womens-watches', bg: 'linear-gradient(135deg,#4c1d95,#7c3aed)', ids: [190, 172, 154] },
+];
+
+function SectionHead({ title, subtitle, href, cta = 'See all' }: { title: string; subtitle?: string; href?: string; cta?: string }) {
+  return (
+    <div className="mb-3 flex items-end justify-between gap-4 sm:mb-4">
+      <div>
+        <h2 className="section-title">{title}</h2>
+        {subtitle && <p className="mt-0.5 hidden text-sm text-muted sm:block">{subtitle}</p>}
+      </div>
+      {href && (
+        <Link href={href} className="group inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-ink shadow-[var(--shadow-soft)] transition hover:bg-ink hover:text-white">
+          {cta}
+          <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
+        </Link>
+      )}
+    </div>
+  );
 }
 
 export default async function Home() {
   const user = await currentUser();
+  const delivery = deliveryDate(2);
+  const deals = topDeals(16);
+  const best = bestSellers(24);
+  const dealHero = deals[0];
+  const newTech = getProduct(160)!;
+
   return (
-    <div className="bg-page pb-8">
-      <div className="mx-auto max-w-[1500px]">
+    <div className="gutter space-y-8 py-4 sm:space-y-12 sm:py-6">
+      {/* Hero bento */}
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)]">
         <HeroCarousel slides={SLIDES} />
-
-        <div className="relative z-10 -mt-10 grid grid-cols-2 gap-2.5 px-2.5 sm:-mt-40 sm:gap-5 sm:px-5 lg:-mt-52 lg:grid-cols-4">
-          {!user && (
-            <section className="card col-span-2 flex flex-col rounded-lg sm:col-span-1 sm:rounded-none">
-              <h2 className="text-lg font-bold sm:text-xl">Sign in for the best experience</h2>
-              <p className="mt-2 text-sm text-muted">Track orders, save items for later, and check out in seconds.</p>
-              <Link href="/signin" className="btn-cta mt-4 w-full py-2">
-                Sign in securely
-              </Link>
-              <p className="mt-2 text-sm">
-                New here?{' '}
-                <Link href="/register" className="link">
-                  Create an account
-                </Link>
-              </p>
-              <div className="mt-auto rounded bg-[#f7fafa] p-3 text-sm">
-                <b>Free delivery</b> on orders over $35. Easy 30-day returns.
-              </div>
-            </section>
-          )}
-          {QUADS.slice(0, user ? 8 : 7).map(q => {
-            const items = quadItems(q.cats);
-            return (
-              <section key={q.title} className="flex flex-col rounded-lg bg-white p-3 sm:rounded-none sm:p-5">
-                <h2 className="mb-2 text-[15px] leading-tight font-bold sm:mb-3 sm:text-xl">{q.title}</h2>
-                <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
-                  {items.map(p => (
-                    <Link key={p.id} href={`/dp/${p.id}`} className="group">
-                      <div className="flex aspect-square items-center justify-center bg-[#f7f7f7] p-2">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.thumbnail} alt="" loading="lazy" className="max-h-full object-contain mix-blend-multiply transition-transform group-hover:scale-105" />
-                      </div>
-                      <span className="mt-1 line-clamp-1 hidden text-xs sm:block">{q.cats.length > 1 ? categoryLabel(p.category) : p.title}</span>
-                    </Link>
-                  ))}
-                </div>
-                <Link href={q.href} className="link mt-auto pt-2 text-xs sm:pt-3 sm:text-sm">
-                  Shop now
-                </Link>
-              </section>
-            );
-          })}
-        </div>
-
-        <section className="mx-2.5 mt-2.5 rounded-lg bg-white p-4 sm:mx-5 sm:mt-5 sm:rounded-none sm:p-5">
-          <h2 className="mb-3 text-lg font-bold sm:text-xl">Shop by category</h2>
-          <ul className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-1 sm:gap-5">
-            {CATEGORY_ROW.map(c => {
-              const p = byCategory(c, 1)[0];
-              return (
-                <li key={c} className="shrink-0">
-                  <Link href={`/s?category=${c}`} className="group flex w-[72px] flex-col items-center gap-1.5 text-center sm:w-24">
-                    <span className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-[#f3f3f3] ring-2 ring-transparent transition group-hover:ring-accent sm:h-24 sm:w-24">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.thumbnail} alt="" loading="lazy" className="h-4/5 w-4/5 object-contain mix-blend-multiply" />
-                    </span>
-                    <span className="text-xs leading-tight sm:text-sm">{categoryLabel(c)}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-
-        <div className="mt-2.5 space-y-2.5 px-2.5 sm:mt-5 sm:space-y-5 sm:px-5">
-          <ProductCarousel title="Today's Deals" items={topDeals(16)} href="/s?deals=1&sort=discount" showPrice />
-          <ProductCarousel title="Best Sellers across the store" items={bestSellers(16)} href="/s?sort=rating" />
-          <ProductCarousel title="Top picks in Laptops & Tablets" items={[...byCategory('laptops'), ...byCategory('tablets')]} href="/s?category=laptops" />
-          <ProductCarousel title="Groceries you'll love" items={byCategory('groceries', 16)} href="/s?category=groceries" showPrice />
-          <ProductCarousel title="Furniture & home décor" items={[...byCategory('furniture'), ...byCategory('home-decoration')]} href="/s?category=furniture" />
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-1 lg:grid-rows-2">
+          <Link href="/s?deals=1&sort=discount" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-[#fff1eb] to-[#ffe0d2] p-4 sm:p-6">
+            <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
+              <span className="rounded-full bg-deal px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-white sm:text-[11px]">Up to {Math.round(dealHero.discountPercentage)}% off</span>
+              <h3 className="mt-2 text-base leading-tight font-extrabold text-ink sm:text-2xl">Deals of the day</h3>
+              <p className="mt-1 hidden text-sm text-[#7c2d12] sm:block">Fresh markdowns across every department.</p>
+              <span className="mt-2 inline-block text-sm font-bold text-deal group-hover:underline sm:mt-3">Shop deals →</span>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+          </Link>
+          <Link href="/s?category=tablets" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-3 p-4 text-white sm:p-6">
+            <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
+              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap sm:text-[11px]">New in tech</span>
+              <h3 className="mt-2 text-base leading-tight font-extrabold sm:text-2xl">Tablets for work &amp; play</h3>
+              <p className="mt-1 hidden text-sm text-white/70 sm:block">From {`$${Math.min(...byCategory('tablets').map(p => p.price)).toFixed(0)}`}. Delivered {delivery.split(', ')[0]}.</p>
+              <span className="mt-2 inline-block text-sm font-bold text-[#b9a8ff] group-hover:underline sm:mt-3">Explore →</span>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={newTech.thumbnail} alt="" className="absolute -right-2 -bottom-2 h-24 w-24 object-contain drop-shadow-2xl transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+          </Link>
         </div>
       </div>
+
+      {/* Perks strip */}
+      <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
+        {PERKS.map(p => (
+          <li key={p.title} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] sm:p-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 sm:h-12 sm:w-12">
+              <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-brand stroke-2 sm:h-6 sm:w-6">
+                <path d={p.d} strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <span className="min-w-0">
+              <b className="block text-[13px] sm:text-[15px]">{p.title}</b>
+              <span className="block truncate text-[11px] text-muted sm:text-sm">{p.text}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Categories */}
+      <section>
+        <SectionHead title="Shop by category" subtitle="Everything you need, one tap away" href="/s" cta="All products" />
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2.5 sm:grid-cols-[repeat(auto-fill,minmax(128px,1fr))] sm:gap-4">
+          {CATEGORY_TILES.map(({ slug, tint }) => {
+            const p = byCategory(slug, 1)[0];
+            return (
+              <li key={slug}>
+                <Link href={`/s?category=${slug}`} className="group flex flex-col items-center gap-2 rounded-2xl bg-white p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-3">
+                  <span className="flex aspect-square w-full items-center justify-center rounded-xl" style={{ background: tint }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.thumbnail} alt="" loading="lazy" className="h-4/5 w-4/5 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110" />
+                  </span>
+                  <span className="text-xs leading-tight font-semibold sm:text-sm">{categoryLabel(slug)}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      {/* Deals rail */}
+      <section className="rounded-3xl bg-gradient-to-br from-[#fff5f0] via-white to-[#f4f1ff] p-3 ring-1 ring-black/[.03] sm:p-6">
+        <SectionHead title="🔥 Today's biggest deals" subtitle="Sorted by discount, refreshed daily" href="/s?deals=1&sort=discount" />
+        <ProductRail>
+          {deals.map((p, i) => (
+            <ProductCard key={p.id} p={p} deliveryLabel={delivery} priority={i < 4} />
+          ))}
+        </ProductRail>
+      </section>
+
+      {/* Spotlight banners */}
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+        {SPOTLIGHTS.map(s => (
+          <Link key={s.title} href={s.href} className="group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-3xl p-5 text-white sm:min-h-[220px] sm:p-6" style={{ background: s.bg }}>
+            <div className="relative z-10 max-w-[55%]">
+              <h3 className="text-xl leading-tight font-extrabold sm:text-2xl">{s.title}</h3>
+              <p className="mt-1.5 text-sm text-white/75">{s.text}</p>
+            </div>
+            <span className="relative z-10 inline-flex w-fit items-center gap-1 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-ink transition group-hover:gap-2">
+              Shop now <span aria-hidden>→</span>
+            </span>
+            <div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-end">
+              {getProducts(s.ids).map((p, k) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={p.id}
+                  src={p.thumbnail}
+                  alt=""
+                  loading="lazy"
+                  className={`rounded-2xl bg-white/95 object-contain p-2 shadow-xl transition duration-500 group-hover:-translate-y-1 ${k === 0 ? 'relative z-10 h-24 w-24 sm:h-28 sm:w-28' : k === 1 ? '-ml-6 h-20 w-20 rotate-6 sm:h-24 sm:w-24' : 'hidden'}`}
+                />
+              ))}
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Best sellers grid (fills any width) */}
+      <section>
+        <SectionHead title="Best sellers" subtitle="What shoppers love right now" href="/s?sort=rating" />
+        <div className="product-grid">
+          {best.map(p => (
+            <ProductCard key={p.id} p={p} deliveryLabel={delivery} />
+          ))}
+        </div>
+      </section>
+
+      {/* Guest CTA */}
+      {!user && (
+        <section className="relative overflow-hidden rounded-3xl bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
+          <span aria-hidden className="absolute -top-20 -right-10 h-72 w-72 rounded-full bg-brand/40 blur-3xl" />
+          <span aria-hidden className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-coral/30 blur-3xl" />
+          <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+            <div>
+              <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Sign in for a better Shopora</h2>
+              <p className="mt-2 max-w-xl text-white/70">Track orders, keep a wishlist, reorder in one tap and check out in seconds.</p>
+            </div>
+            <div className="flex w-full gap-3 sm:w-auto">
+              <Link href="/signin" className="btn-cta flex-1 px-6 py-3 text-base sm:flex-none">
+                Sign in
+              </Link>
+              <Link href="/register" className="inline-flex flex-1 items-center justify-center rounded-xl bg-white/10 px-6 py-3 text-base font-semibold ring-1 ring-white/20 transition hover:bg-white/20 sm:flex-none">
+                Create account
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Category rails */}
+      {[
+        { title: 'Top picks in electronics', href: '/s?category=smartphones', items: [...byCategory('smartphones', 8), ...byCategory('laptops', 5), ...byCategory('tablets', 3)] },
+        { title: 'Fresh groceries', href: '/s?category=groceries', items: byCategory('groceries', 16) },
+        { title: 'Style for everyone', href: '/s?category=womens-dresses', items: [...byCategory('womens-dresses', 4), ...byCategory('mens-shirts', 4), ...byCategory('womens-shoes', 4), ...byCategory('mens-shoes', 4)] },
+      ].map(r => (
+        <section key={r.title}>
+          <SectionHead title={r.title} href={r.href} />
+          <ProductRail>
+            {r.items.map(p => (
+              <ProductCard key={p.id} p={p} deliveryLabel={delivery} />
+            ))}
+          </ProductRail>
+        </section>
+      ))}
     </div>
   );
 }

@@ -35,11 +35,11 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
   const [pending, start] = useTransition();
 
   if (ready && address === null) setAddress(loadAddress(userName));
-  if (!ready || !address) return <div className="mx-auto h-96 max-w-[1150px] animate-pulse p-5" aria-busy="true" />;
+  if (!ready || !address) return <div className="mx-auto h-96 max-w-[1280px] animate-pulse p-5" aria-busy="true" />;
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-[1150px] p-6 text-center">
+      <div className="mx-auto max-w-[1280px] p-6 text-center">
         <p className="text-lg font-bold">Your cart is empty.</p>
         <Link href="/" className="btn-cta mt-4">
           Continue shopping
@@ -93,19 +93,19 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
   );
 
   const PlaceButton = ({ className = '' }: { className?: string }) => (
-    <button onClick={submit} disabled={pending} className={`btn-cta rounded-lg py-2 ${className}`}>
+    <button onClick={submit} disabled={pending} className={`btn-cta py-3 text-base ${className}`}>
       {pending ? 'Placing your order…' : 'Place your order'}
     </button>
   );
 
   return (
-    <div className="mx-auto flex max-w-[1150px] flex-col gap-6 p-4 lg:flex-row lg:items-start">
+    <div className="mx-auto flex max-w-[1280px] flex-col gap-6 p-4 lg:flex-row lg:items-start">
       <div className="min-w-0 flex-1 space-y-4">
         {error && <FormAlert title="We couldn't place your order">{error}</FormAlert>}
 
-        <section className="rounded-lg border border-line p-4">
+        <section className="rounded-3xl bg-white p-5 shadow-[var(--shadow-soft)] sm:p-6">
           <h2 className="mb-3 text-lg font-bold">
-            <span className="mr-2 text-muted">1</span>Delivery address
+            <span className="mr-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand text-sm text-white">1</span>Delivery address
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {input('fullName', 'Full name', { autoComplete: 'name' })}
@@ -119,15 +119,15 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
           </div>
         </section>
 
-        <section className="rounded-lg border border-line p-4">
+        <section className="rounded-3xl bg-white p-5 shadow-[var(--shadow-soft)] sm:p-6">
           <h2 className="mb-3 text-lg font-bold">
-            <span className="mr-2 text-muted">2</span>Payment method
+            <span className="mr-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand text-sm text-white">2</span>Payment method
           </h2>
           <fieldset className="space-y-2">
             <legend className="sr-only">Payment method</legend>
             {PAYMENTS.map(p => (
-              <label key={p.id} className={`flex cursor-pointer gap-3 rounded-lg border p-3 ${payment === p.id ? 'border-[#fbd8b4] bg-[#fcf5ee]' : 'border-line'}`}>
-                <input type="radio" name="payment" value={p.id} checked={payment === p.id} onChange={() => setPayment(p.id)} className="mt-1 accent-[#e77600]" />
+              <label key={p.id} className={`flex cursor-pointer gap-3 rounded-2xl border p-4 transition ${payment === p.id ? 'border-brand bg-brand-50' : 'border-line hover:border-brand/40'}`}>
+                <input type="radio" name="payment" value={p.id} checked={payment === p.id} onChange={() => setPayment(p.id)} className="mt-1 accent-[#5b3df5]" />
                 <span>
                   <b className="text-sm">{p.label}</b>
                   <span className="block text-xs text-muted">{p.note}</span>
@@ -137,16 +137,16 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
           </fieldset>
         </section>
 
-        <section className="rounded-lg border border-line p-4">
+        <section className="rounded-3xl bg-white p-5 shadow-[var(--shadow-soft)] sm:p-6">
           <h2 className="mb-1 text-lg font-bold">
-            <span className="mr-2 text-muted">3</span>Review items and delivery
+            <span className="mr-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand text-sm text-white">3</span>Review items and delivery
           </h2>
           <p className="mb-3 font-bold text-success">Arriving {deliverBy}</p>
           <ul className="divide-y divide-line">
             {items.map(i => (
               <li key={i.id} className="flex gap-3 py-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={i.thumbnail} alt="" className="h-16 w-16 object-contain" />
+                <img src={i.thumbnail} alt="" className="h-16 w-16 rounded-xl bg-[#f3f4f8] object-contain p-1 mix-blend-multiply" />
                 <div className="min-w-0 flex-1 text-sm">
                   <p className="line-clamp-2 font-bold">{i.title}</p>
                   <p className="text-deal">{money(i.price)}</p>
@@ -155,17 +155,17 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
               </li>
             ))}
           </ul>
-          <div className="mt-3 flex flex-col items-center gap-3 rounded-lg border border-line p-3 sm:flex-row">
+          <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl bg-[#fafbfe] p-4 sm:flex-row">
             <PlaceButton className="w-full sm:w-auto sm:px-6" />
             <div>
-              <p className="text-lg font-bold text-deal">Order total: {money(total)}</p>
+              <p className="text-lg font-extrabold text-ink">Order total: {money(total)}</p>
               <p className="text-xs text-muted">By placing your order, you agree to Shopora&apos;s conditions of use (demo).</p>
             </div>
           </div>
         </section>
       </div>
 
-      <aside className="w-full rounded-lg border border-line p-4 lg:sticky lg:top-4 lg:w-[300px]">
+      <aside className="w-full rounded-3xl bg-white p-5 shadow-[var(--shadow-lift)] lg:sticky lg:top-4 lg:w-[340px]">
         <PlaceButton className="w-full" />
         <hr className="my-3 border-line" />
         <h3 className="mb-2 text-lg font-bold">Order Summary</h3>
@@ -182,7 +182,7 @@ export function Checkout({ userName, deliverBy }: { userName: string; deliverBy:
             <dt>Estimated tax (8%):</dt>
             <dd>{money(tax)}</dd>
           </div>
-          <div className="flex justify-between border-t border-line pt-2 text-lg font-bold text-deal">
+          <div className="flex justify-between border-t border-line pt-3 text-lg font-extrabold text-ink">
             <dt>Order total:</dt>
             <dd>{money(total)}</dd>
           </div>

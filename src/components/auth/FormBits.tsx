@@ -10,7 +10,7 @@ export function FieldError({ msg }: { msg?: string }) {
 
 export function FormAlert({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div role="alert" className="mb-4 flex gap-3 rounded-lg border border-deal p-4 shadow-[0_0_0_4px_#fcf4f4_inset]">
+    <div role="alert" className="mb-4 flex gap-3 rounded-2xl border border-deal/30 bg-[#fff5f5] p-4">
       <span aria-hidden className="text-2xl leading-none text-deal">⚠</span>
       <div>
         <p className="font-bold text-deal">{title}</p>

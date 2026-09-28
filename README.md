@@ -1,7 +1,7 @@
 # Shopora: a marketplace storefront (Amazon-style clone)
 
-A working e-commerce storefront modeled on Amazon's shopping flow, rebuilt to be cleaner on
-phones. Built for the 8x assignment. The prompt-and-response record of how it was built is in
+A working e-commerce storefront modeled on Amazon's shopping flow, with its own modern design:
+full-width layouts that fill any screen, and an app-like experience on phones. Built for the 8x assignment. The prompt-and-response record of how it was built is in
 [`.agent-logs/`](.agent-logs), and the capture setup is described in [`CAPTURE-TEST.md`](CAPTURE-TEST.md).
 
 > Original name and wordmark on purpose. Copying a real retailer's logo and a lookalike
@@ -26,12 +26,24 @@ Node 20+. No database or env setup needed: users and orders are written to `data
 | **Home** | Hero carousel (swipe, dots, pauses on hover, honours reduced-motion), category quad cards, round "Shop by category" row, deal / best-seller / category shelves |
 | **Search** | Live type-ahead suggestions (keyboard navigable), department scope, relevance ranking, filters (department, rating, brand, price bands + custom range, deals), sort, pagination, removable filter chips, helpful empty state |
 | **Product page** | Image gallery with hover zoom, price with list price & % off, stock urgency from real stock, buy box with quantity, **Add to cart** and **Buy Now**, rating breakdown, reviews, related products |
+| **Wishlist** | Save/unsave from any card or product page, wishlist page, add all to cart, header + tab-bar badges |
 | **Cart** | Quantity stepper (capped by stock), delete, **save for later / move to cart**, free-delivery progress bar, persists across reloads and syncs between tabs |
 | **Auth** | Sign up (inline validation), two-step sign in (email → password, like the real thing), show password, keep me signed in, sign out, `?next=` redirect back to where you were |
 | **Checkout** | Requires sign-in, address form with per-field errors, remembered address, payment choice (simulated), order summary with shipping + tax |
 | **Orders** | Confirmation screen, order history, order details with shipment progress, **Buy it again** |
 
 ### Better than a straight copy
+
+- **Own visual identity.** Ink + violet theme with coral deals, Plus Jakarta Sans, soft cards and
+  gradient promos; design tokens live in `src/app/globals.css`, so the whole store re-themes from one file.
+- **Uses the whole screen.** No fixed-width container: product grids auto-fill columns, so a
+  1920px or 2560px monitor shows more products instead of empty side margins.
+- **Richer product cards.** Hover lift, one-tap quick add on the image, wishlist heart, rating pill,
+  discount and low-stock badges, delivery estimate.
+- **Wishlist.** Heart any product; `/wishlist` with add-to-cart and "add all".
+- **Bento home page.** Hero carousel + promo tiles, perks strip, category tiles, deal rail,
+  spotlight banners, best-seller grid, category rails.
+- **Split-screen sign in / sign up** with a brand panel on desktop.
 
 - **Mobile first.** App-style bottom tab bar (Home, Shop, Deals, Orders, Cart with badge),
   a filter **bottom sheet** instead of a hidden sidebar, and a **sticky Add to cart / Buy Now bar**

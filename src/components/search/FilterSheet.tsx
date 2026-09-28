@@ -23,7 +23,7 @@ export function FilterSheet({ activeCount, resultCount, children }: { activeCoun
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1 text-sm font-semibold md:hidden">
+      <button type="button" onClick={() => setOpen(true)} className="chip border-ink bg-ink text-white hover:bg-ink md:hidden">
         <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
           <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
         </svg>
@@ -43,7 +43,7 @@ export function FilterSheet({ activeCount, resultCount, children }: { activeCoun
             </div>
             <div className="overflow-y-auto px-4 py-3 text-[15px] [&_a]:py-1.5">{children}</div>
             <div className="border-t border-line p-3 pb-[max(12px,env(safe-area-inset-bottom))]">
-              <button onClick={() => setOpen(false)} className="btn-cta w-full rounded-lg py-2.5 font-semibold">
+              <button onClick={() => setOpen(false)} className="btn-cta w-full py-3">
                 Show {resultCount} results
               </button>
             </div>

@@ -15,7 +15,7 @@ export function SortSelect({ value }: { value: string }) {
   const pathname = usePathname();
   const params = useSearchParams();
   return (
-    <label className="flex items-center gap-1 rounded-lg border border-line bg-[#f0f2f2] px-2 py-1 text-xs shadow-sm">
+    <label className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-sm text-muted shadow-[var(--shadow-soft)]">
       Sort by:
       <select
         value={value}
@@ -26,7 +26,7 @@ export function SortSelect({ value }: { value: string }) {
           sp.delete('page');
           router.push(`${pathname}?${sp.toString()}`);
         }}
-        className="cursor-pointer bg-transparent outline-none"
+        className="cursor-pointer bg-transparent font-semibold text-ink outline-none"
       >
         {OPTIONS.map(([v, l]) => (
           <option key={v} value={v}>

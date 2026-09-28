@@ -22,10 +22,10 @@ export function AddedToCartToast() {
   if (!lastAdded) return null;
 
   return (
-    <div role="status" aria-live="polite" className="fixed top-4 right-4 z-[70] w-[min(360px,calc(100vw-2rem))] animate-[toast-in_.2s_ease-out] rounded-lg border border-line bg-white p-4 shadow-2xl">
+    <div role="status" aria-live="polite" className="fixed top-3 right-3 z-[70] w-[min(380px,calc(100vw-1.5rem))] animate-[toast-in_.2s_ease-out] rounded-3xl bg-white p-4 shadow-[var(--shadow-lift)] ring-1 ring-black/5 sm:top-5 sm:right-5">
       <div className="flex gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={lastAdded.thumbnail} alt="" className="h-16 w-16 shrink-0 rounded object-contain" />
+        <img src={lastAdded.thumbnail} alt="" className="h-16 w-16 shrink-0 rounded-2xl bg-[#f3f4f8] object-contain p-1 mix-blend-multiply" />
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1 font-bold text-success">
             <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-success">

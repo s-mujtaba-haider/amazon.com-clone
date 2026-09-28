@@ -13,15 +13,15 @@ export function Price({
   showList?: boolean;
 }) {
   const { whole, cents } = priceParts(price);
-  const big = { sm: 'text-xl', md: 'text-[28px]', lg: 'text-[28px] sm:text-[32px]' }[size];
+  const big = { sm: 'text-xl', md: 'text-[30px]', lg: 'text-[34px] sm:text-[40px]' }[size];
   const hasDeal = discount >= 5;
   return (
     <div>
       <div className="flex items-start gap-2">
-        {hasDeal && size === 'lg' && <span className="text-[28px] font-light text-deal">-{Math.round(discount)}%</span>}
+        {hasDeal && size === 'lg' && <span className="mt-1 rounded-lg bg-deal px-2 py-1 text-sm font-bold text-white">-{Math.round(discount)}%</span>}
         <span className="flex items-start leading-none" aria-label={money(price)}>
           <span aria-hidden className="mt-1 text-xs">$</span>
-          <span aria-hidden className={`${big} leading-none font-medium`}>{whole}</span>
+          <span aria-hidden className={`${big} leading-none font-extrabold tracking-tight`}>{whole}</span>
           <span aria-hidden className="mt-1 text-xs">{cents}</span>
         </span>
       </div>

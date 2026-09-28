@@ -9,14 +9,14 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
   const { items, saved, ready, count, subtotal, setQty, remove, saveForLater, moveToCart, removeSaved } = useCart();
 
   if (!ready) {
-    return <div className="mx-auto h-96 max-w-[1500px] animate-pulse p-5" aria-busy="true" />;
+    return <div className="gutter h-96 animate-pulse py-6" aria-busy="true" />;
   }
 
   const toFree = FREE_SHIPPING_MIN - subtotal;
   const itemsLabel = `${count} ${count === 1 ? 'item' : 'items'}`;
 
   return (
-    <div className="mx-auto flex max-w-[1500px] flex-col gap-5 p-3 sm:p-5 lg:flex-row lg:items-start">
+    <div className="gutter flex flex-col gap-5 py-5 sm:py-8 lg:flex-row lg:items-start xl:gap-8">
       <div className="min-w-0 flex-1 space-y-5">
         <section className="card">
           {items.length === 0 ? (
@@ -27,7 +27,7 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
                 <circle cx="90" cy="78" r="7" fill="#232f3e" />
               </svg>
               <div>
-                <h1 className="text-2xl font-bold">Your Shopora Cart is empty</h1>
+                <h1 className="text-2xl font-extrabold">Your cart is empty</h1>
                 <Link href="/s?deals=1&sort=discount" className="link text-sm">
                   Shop today&apos;s deals
                 </Link>
@@ -46,7 +46,7 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
           ) : (
             <>
               <div className="flex items-end justify-between border-b border-line pb-2">
-                <h1 className="text-[28px] leading-tight font-normal">Shopping Cart</h1>
+                <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Shopping cart</h1>
                 <span className="hidden text-sm text-muted sm:block">Price</span>
               </div>
               <ul>
@@ -86,7 +86,7 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
       </div>
 
       {items.length > 0 && (
-        <aside className="card w-full space-y-3 lg:sticky lg:top-32 lg:w-[300px]">
+        <aside className="card w-full space-y-4 lg:sticky lg:top-36 lg:w-[360px]">
           {toFree > 0 ? (
             <div className="text-sm">
               <div className="mb-1 h-2 overflow-hidden rounded-full bg-[#e3e6e6]">
@@ -105,7 +105,7 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
           <p className="text-lg">
             Subtotal ({itemsLabel}): <b>{money(subtotal)}</b>
           </p>
-          <Link href="/checkout" className="btn-cta w-full rounded-lg py-2">
+          <Link href="/checkout" className="btn-cta w-full py-3 text-base">
             Proceed to checkout
           </Link>
         </aside>
@@ -120,17 +120,17 @@ function Sep() {
 
 function CartRow({ item, children }: { item: CartItem; children: React.ReactNode }) {
   return (
-    <li className="flex gap-4 border-b border-line py-4 last:border-0">
-      <Link href={`/dp/${item.id}`} className="flex h-28 w-28 shrink-0 items-center justify-center sm:h-44 sm:w-44">
+    <li className="flex gap-4 border-b border-line py-5 last:border-0">
+      <Link href={`/dp/${item.id}`} className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-b from-[#f6f7fb] to-[#eef0f7] p-2 sm:h-36 sm:w-36">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.thumbnail} alt={item.title} className="max-h-full max-w-full object-contain" />
+        <img src={item.thumbnail} alt={item.title} className="max-h-full max-w-full object-contain mix-blend-multiply" />
       </Link>
       <div className="min-w-0 flex-1">
         <div className="flex justify-between gap-4">
-          <Link href={`/dp/${item.id}`} className="line-clamp-2 text-base leading-snug hover:text-link-hover sm:text-lg">
+          <Link href={`/dp/${item.id}`} className="line-clamp-2 text-[15px] leading-snug font-semibold hover:text-brand sm:text-lg">
             {item.title}
           </Link>
-          <b className="hidden text-lg sm:block">{money(item.price)}</b>
+          <b className="hidden text-lg font-extrabold sm:block">{money(item.price)}</b>
         </div>
         <b className="sm:hidden">{money(item.price)}</b>
         <p className={`text-xs ${item.stock <= 10 ? 'text-deal' : 'text-success'}`}>{item.stock <= 10 ? `Only ${item.stock} left in stock` : 'In Stock'}</p>
@@ -143,8 +143,8 @@ function CartRow({ item, children }: { item: CartItem; children: React.ReactNode
 
 function QtyStepper({ qty, max, onChange }: { qty: number; max: number; onChange: (q: number) => void }) {
   return (
-    <div className="flex items-center overflow-hidden rounded-full border-[3px] border-cta">
-      <button aria-label={qty === 1 ? 'Delete item' : 'Decrease quantity'} onClick={() => onChange(qty - 1)} className="flex h-7 w-8 items-center justify-center hover:bg-[#fff6c8]">
+    <div className="flex items-center overflow-hidden rounded-full bg-[#f3f4f8] ring-1 ring-line">
+      <button aria-label={qty === 1 ? 'Delete item' : 'Decrease quantity'} onClick={() => onChange(qty - 1)} className="flex h-7 w-8 items-center justify-center hover:bg-brand-50">
         {qty === 1 ? (
           <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-[#0f1111]">
             <path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Z" />
@@ -154,7 +154,7 @@ function QtyStepper({ qty, max, onChange }: { qty: number; max: number; onChange
         )}
       </button>
       <span className="w-8 text-center text-sm font-bold" aria-live="polite">{qty}</span>
-      <button aria-label="Increase quantity" disabled={qty >= max} onClick={() => onChange(qty + 1)} className="flex h-7 w-8 items-center justify-center hover:bg-[#fff6c8] disabled:opacity-30">
+      <button aria-label="Increase quantity" disabled={qty >= max} onClick={() => onChange(qty + 1)} className="flex h-7 w-8 items-center justify-center hover:bg-brand-50 disabled:opacity-30">
         +
       </button>
     </div>

@@ -17,8 +17,7 @@ export function SignInForm({ next }: { next: string }) {
   }, [step, state]);
 
   return (
-    <div className="rounded-lg border border-line p-6">
-      <h1 className="mb-4 text-[28px] font-normal">Sign in</h1>
+    <div className="rounded-3xl bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
       {state.error && !editing && <FormAlert title="There was a problem">{state.error}</FormAlert>}
 
       <form action={fd => { setEditing(false); action(fd); }} noValidate>
@@ -27,7 +26,7 @@ export function SignInForm({ next }: { next: string }) {
 
         {step === 'email' ? (
           <>
-            <label htmlFor="email" className="text-[13px] font-bold">
+            <label htmlFor="email" className="text-sm font-semibold">
               Email
             </label>
             <input
@@ -41,14 +40,14 @@ export function SignInForm({ next }: { next: string }) {
               className={`field mt-1 ${state.fieldErrors?.email ? 'field-error' : ''}`}
             />
             <FieldError msg={state.fieldErrors?.email} />
-            <button disabled={pending} className="btn-cta mt-4 w-full rounded-lg py-2">
+            <button disabled={pending} className="btn-cta mt-5 w-full py-3 text-base">
               {pending ? 'Checking…' : 'Continue'}
             </button>
           </>
         ) : (
           <>
             <input type="hidden" name="email" value={state.email} />
-            <p className="mb-3 text-sm">
+            <p className="mb-4 rounded-xl bg-brand-50 px-3 py-2.5 text-sm">
               {state.name ? <>Welcome back, <b>{state.name.split(' ')[0]}</b> · </> : null}
               {state.email}{' '}
               <button type="button" onClick={() => setEditing(true)} className="link">
@@ -56,7 +55,7 @@ export function SignInForm({ next }: { next: string }) {
               </button>
             </p>
             <div className="flex items-baseline justify-between">
-              <label htmlFor="password" className="text-[13px] font-bold">
+              <label htmlFor="password" className="text-sm font-semibold">
                 Password
               </label>
               <button type="button" onClick={() => setShowPw(s => !s)} className="link text-xs">
@@ -73,7 +72,7 @@ export function SignInForm({ next }: { next: string }) {
               className={`field mt-1 ${state.fieldErrors?.password ? 'field-error' : ''}`}
             />
             <FieldError msg={state.fieldErrors?.password} />
-            <button disabled={pending} className="btn-cta mt-4 w-full rounded-lg py-2">
+            <button disabled={pending} className="btn-cta mt-5 w-full py-3 text-base">
               {pending ? 'Signing in…' : 'Sign in'}
             </button>
             <label className="mt-3 flex items-center gap-2 text-sm">

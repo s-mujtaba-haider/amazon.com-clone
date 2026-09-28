@@ -11,8 +11,8 @@ export function RegisterForm({ next }: { next: string }) {
   const fe = state.fieldErrors ?? {};
 
   const field = (name: 'name' | 'email' | 'password' | 'confirm', label: string, type: string, autoComplete: string, extra?: React.ReactNode) => (
-    <div className="mb-3">
-      <label htmlFor={name} className="text-[13px] font-bold">
+    <div className="mb-4">
+      <label htmlFor={name} className="text-sm font-semibold">
         {label}
       </label>
       <input
@@ -32,8 +32,7 @@ export function RegisterForm({ next }: { next: string }) {
   );
 
   return (
-    <div className="rounded-lg border border-line p-6">
-      <h1 className="mb-4 text-[28px] font-normal">Create account</h1>
+    <div className="rounded-3xl bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
       {state.error && (
         <FormAlert title="There was a problem">
           {state.error}{' '}
@@ -58,7 +57,7 @@ export function RegisterForm({ next }: { next: string }) {
           ),
         )}
         {field('confirm', 'Re-enter password', 'password', 'new-password')}
-        <button disabled={pending} className="btn-cta mt-2 w-full rounded-lg py-2">
+        <button disabled={pending} className="btn-cta mt-3 w-full py-3 text-base">
           {pending ? 'Creating your account…' : 'Create your Shopora account'}
         </button>
       </form>
