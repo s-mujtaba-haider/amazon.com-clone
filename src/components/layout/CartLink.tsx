@@ -17,7 +17,7 @@ export function CartLink() {
         </svg>
         <span
           key={n}
-          className={`absolute -top-0.5 -right-1 flex h-[19px] min-w-[19px] animate-[pop_.3s_ease-out] items-center justify-center rounded-full px-1 text-[11px] font-bold ${n ? 'bg-coral text-white' : 'bg-white/15 text-white/70'}`}
+          className={`absolute -top-0.5 -right-1 flex h-[19px] min-w-[19px] animate-[bump_.4s_ease-out] items-center justify-center rounded-full px-1 text-[11px] font-bold ${n ? 'bg-coral text-white' : 'bg-white/15 text-white/70'}`}
         >
           {n > 99 ? '99+' : n}
         </span>

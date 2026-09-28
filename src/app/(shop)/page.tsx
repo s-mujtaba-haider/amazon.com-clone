@@ -107,9 +107,9 @@ export default async function Home() {
       {/* Perks strip */}
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {PERKS.map((p, i) => (
-          <li key={p.title} data-reveal style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 sm:h-12 sm:w-12">
-              <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-brand stroke-2 sm:h-6 sm:w-6">
+          <li key={p.title} data-reveal data-perk style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="group flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4">
+            <span className="tile-pop flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 transition group-hover:bg-brand sm:h-12 sm:w-12">
+              <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-brand stroke-2 transition group-hover:stroke-white sm:h-6 sm:w-6">
                 <path d={p.d} strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
@@ -146,7 +146,7 @@ export default async function Home() {
             const p = byCategory(slug, 1)[0];
             return (
               <li key={slug} data-reveal style={{ '--reveal-delay': `${(i % 9) * 40}ms` } as React.CSSProperties}>
-                <Link href={`/s?category=${slug}`} className="group flex flex-col items-center gap-2 rounded-2xl bg-white p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-3">
+                <Link href={`/s?category=${slug}`} className="tile-pop group flex flex-col items-center gap-2 rounded-2xl bg-white p-2.5 text-center shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:p-3">
                   <span className="flex aspect-square w-full items-center justify-center rounded-xl" style={{ background: tint }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.thumbnail} alt="" loading="lazy" className="h-4/5 w-4/5 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110" />

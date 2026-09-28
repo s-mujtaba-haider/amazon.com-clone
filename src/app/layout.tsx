@@ -15,9 +15,19 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#0b1220' };
 
+/*
+ * Runs before first paint so revealable content is hidden from the start and can fade in,
+ * instead of painting visible and then being hidden (which cancels the entrance).
+ * Safety net: if the app never boots, drop the class so nothing stays hidden.
+ */
+const REVEAL_BOOT = `(function(){if(!('IntersectionObserver' in window))return;var d=document.documentElement;d.classList.add('js-reveal');setTimeout(function(){if(!window.__revealReady)d.classList.remove('js-reveal')},3000)})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={jakarta.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_BOOT }} />
+      </head>
       <body className="flex min-h-dvh flex-col">
         <CartProvider>
           <WishlistProvider>
