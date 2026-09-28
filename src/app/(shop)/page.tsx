@@ -89,7 +89,7 @@ export default async function Home() {
               <span className="mt-2 inline-block text-sm font-bold text-deal group-hover:underline sm:mt-3">Shop deals →</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 animate-[float_6s_ease-in-out_infinite] object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+            <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
           </Link>
           <Link href="/s?category=tablets" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-3 p-4 text-white sm:p-6">
             <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
@@ -99,7 +99,7 @@ export default async function Home() {
               <span className="mt-2 inline-block text-sm font-bold text-[#b9a8ff] group-hover:underline sm:mt-3">Explore →</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={newTech.thumbnail} alt="" className="absolute -right-2 -bottom-2 h-24 w-24 animate-[float_7s_ease-in-out_.5s_infinite] object-contain drop-shadow-2xl transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
+            <img src={newTech.thumbnail} alt="" className="absolute -right-2 -bottom-2 h-24 w-24 object-contain drop-shadow-2xl transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
           </Link>
         </div>
       </div>
@@ -122,16 +122,14 @@ export default async function Home() {
       </ul>
 
       {/* Brand ticker */}
-      <section aria-label="Popular brands" data-reveal className="group relative overflow-hidden rounded-2xl bg-white py-4 shadow-[var(--shadow-soft)]">
+      <section aria-label="Popular brands" data-reveal className="relative overflow-hidden rounded-2xl bg-white py-4 shadow-[var(--shadow-soft)]">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
-        <div className="flex w-max animate-[marquee_40s_linear_infinite] gap-3 group-hover:[animation-play-state:paused]">
-          {[...BRANDS, ...BRANDS].map((b, i) => (
+        <div className="no-scrollbar flex gap-3 overflow-x-auto px-4">
+          {BRANDS.map(b => (
             <Link
-              key={i}
+              key={b}
               href={`/s?brand=${encodeURIComponent(b)}`}
-              tabIndex={i >= BRANDS.length ? -1 : undefined}
-              aria-hidden={i >= BRANDS.length || undefined}
               className="rounded-full bg-[#f5f6fa] px-5 py-2 text-sm font-bold whitespace-nowrap text-[#475569] transition hover:bg-brand hover:text-white"
             >
               {b}
@@ -211,7 +209,7 @@ export default async function Home() {
       {/* Guest CTA */}
       {!user && (
         <section data-reveal className="relative overflow-hidden rounded-3xl bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
-          <span aria-hidden className="absolute -top-20 -right-10 h-72 w-72 animate-[float_9s_ease-in-out_infinite] rounded-full bg-brand/40 blur-3xl" />
+          <span aria-hidden className="absolute -top-20 -right-10 h-72 w-72 rounded-full bg-brand/40 blur-3xl" />
           <span aria-hidden className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-coral/30 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div>

@@ -68,7 +68,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
                   src={src}
                   alt=""
                   className={`rounded-3xl bg-white/95 object-contain p-3 shadow-2xl ${
-                    k === 0 ? 'relative z-10 h-28 w-28 animate-[float_6s_ease-in-out_infinite] sm:h-48 sm:w-48 xl:h-64 xl:w-64' : k === 1 ? 'ml-[-2rem] hidden h-40 w-40 rotate-6 animate-[float_7s_ease-in-out_1s_infinite] sm:block xl:h-52 xl:w-52' : 'ml-[-1.5rem] hidden h-44 w-44 -rotate-3 2xl:block'
+                    k === 0 ? 'relative z-10 h-28 w-28 sm:h-48 sm:w-48 xl:h-64 xl:w-64' : k === 1 ? 'ml-[-2rem] hidden h-40 w-40 rotate-6 sm:block xl:h-52 xl:w-52' : 'ml-[-1.5rem] hidden h-44 w-44 -rotate-3 2xl:block'
                   }`}
                 />
               ))}
