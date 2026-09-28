@@ -1,3 +1,10 @@
 # hook bookkeeping only; .agent-logs/ itself is committed
 .claude/hooks/.state/
 .claude/settings.local.json
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+# runtime user/order store (created on first sign-up)
+data/db.json
+.env*.local

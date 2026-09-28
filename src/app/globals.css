@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-nav: #131921;
+  --color-nav-2: #232f3e;
+  --color-nav-3: #37475a;
+  --color-accent: #febd69;
+  --color-accent-strong: #f3a847;
+  --color-cta: #ffd814;
+  --color-cta-hover: #f7ca00;
+  --color-cta-2: #ffa41c;
+  --color-cta-2-hover: #fa8900;
+  --color-link: #007185;
+  --color-link-hover: #c7511f;
+  --color-deal: #cc0c39;
+  --color-success: #067d62;
+  --color-star: #de7921;
+  --color-page: #e3e6e6;
+  --color-muted: #565959;
+  --color-line: #d5d9d9;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white text-[#0f1111] antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid #e77600;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .btn-cta {
+    @apply inline-flex items-center justify-center rounded-full bg-cta px-4 py-1.5 text-sm text-[#0f1111] shadow-[0_2px_5px_rgba(213,217,217,.5)] transition-colors hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-buy {
+    @apply inline-flex items-center justify-center rounded-full bg-cta-2 px-4 py-1.5 text-sm text-[#0f1111] shadow-[0_2px_5px_rgba(213,217,217,.5)] transition-colors hover:bg-cta-2-hover disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-line bg-white px-4 py-1.5 text-sm text-[#0f1111] shadow-[0_2px_5px_rgba(213,217,217,.5)] transition-colors hover:bg-[#f7fafa];
+  }
+  .link {
+    @apply text-link hover:text-link-hover hover:underline;
+  }
+  .field {
+    @apply w-full rounded-[3px] border border-[#888c8c] px-2 py-1.5 text-sm shadow-[0_1px_0_rgba(255,255,255,.5),inset_0_1px_0_rgba(15,17,17,.15)] outline-none focus:border-[#e77600] focus:shadow-[0_0_3px_2px_rgba(228,121,17,.5)];
+  }
+  .field-error {
+    @apply border-deal focus:border-deal;
+  }
+  .nav-hover {
+    @apply rounded-sm border border-transparent hover:border-white;
+  }
+  .card {
+    @apply bg-white p-5;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes toast-in {
+  from {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+}
