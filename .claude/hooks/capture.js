@@ -163,10 +163,11 @@ function appendEntry(root, sid, type, num, ts, model, text, promptModel) {
     body = i >= 0 ? cur.slice(i) : '';
   } catch { /* new file */ }
   if (promptModel) {
-    const tag = `[LOG_ENTRY type=PROMPT num=${num} `;
-    const at = body.lastIndexOf(tag);
+    // Anchor on the full header line so LOG_ENTRY text quoted inside a prompt can't match.
+    const tag = `[LOG_ENTRY type=PROMPT num=${num} session=${sid.slice(0, 8)}]\ntimestamp: `;
+    const at = body.startsWith(tag) ? 0 : body.lastIndexOf('\n' + tag);
     if (at >= 0) {
-      const m = body.indexOf('\nmodel: ', at);
+      const m = body.indexOf('\nmodel: ', at + 1);
       const eol = body.indexOf('\n', m + 1);
       if (m >= 0 && eol >= 0) body = body.slice(0, m) + `\nmodel: ${promptModel}` + body.slice(eol);
     }

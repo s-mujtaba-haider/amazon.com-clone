@@ -32,11 +32,45 @@
 
 ## Log files
 
-<!-- filled in after the interactive canaries -->
+| Session | Kind | File |
+|---|---|---|
+| `3b330c5a` | interactive (the session that installed the hooks) | `.agent-logs/2026-09-28_16-02-11_3b330c5a-9266-4ef6-bd99-78bb62004842.md` |
+| `5d4d24be` | headless `claude -p`, separate session, check #1 | `.agent-logs/2026-09-28_16-04-44_5d4d24be-6089-4a4d-9bb3-c2ac01050a75.md` |
+| `88e83c92` | headless, separate session, check #2 | `.agent-logs/2026-09-28_16-05-47_88e83c92-cdf3-4e04-9568-ae758aa16010.md` |
+| `20b065f7` | headless, separate session, check #3 + resumed 2nd turn | `.agent-logs/2026-09-28_16-06-07_20b065f7-29a6-42da-8a56-011b2ecbbc69.md` |
+
+The hooks were installed partway through session `3b330c5a`. They were picked up
+without a restart: at the end of that first turn, the `Stop` hook recovered prompt #1
+from the transcript and logged response #1. Prompt #2 was then captured live by
+`UserPromptSubmit`. I did not send the literal `CAPTURE TEST` canary in the
+interactive session. The user went straight to the build prompt, which proves the same
+thing (captured by hook, no manual step).
 
 ## Canary entries (raw)
 
-<!-- filled in after the interactive canaries -->
+Separate session (`20b065f7`, check #3, headless), pasted raw from the log:
+
+    [LOG_ENTRY type=PROMPT num=1 session=20b065f7]
+    timestamp: 2026-09-28T16:06:07.162Z
+    model: claude-opus-5-5
+
+    CAPTURE TEST — 8x assignment, Mujtaba (headless session check #3, regex fix). Reply with one short sentence.
+
+
+    [LOG_ENTRY type=RESPONSE num=1 session=20b065f7]
+    timestamp: 2026-09-28T16:06:09.227Z
+    model: claude-opus-5-5
+
+    Capture test #3 got through: the headless session is running and replying for Mujtaba's 8x assignment regex fix check.
+
+Interactive session (`3b330c5a`), second prompt, captured live by `UserPromptSubmit`
+(header lines; the full prompt is in the log file):
+
+    [LOG_ENTRY type=PROMPT num=2 session=3b330c5a]
+    timestamp: 2026-09-28T16:09:33.517Z
+    model: claude-opus-5-5
+
+    ok, sow I want to create complete clone of amazon.com, ...
 
 ## What I tried first that did not work
 
@@ -55,3 +89,9 @@
    a template literal, and the `\[` / `\S` escapes were lost. I replaced it with plain
    string search. Headless check #2 (`88e83c92`) still shows `model: unknown` for that
    reason. It was left as-is in `.agent-logs/`, as was check #1 (`5d4d24be`).
+4. **Latent bug found after the canaries.** The first prompt in `3b330c5a` contains the
+   example `[LOG_ENTRY ...]` lines from the assignment brief. The model fix-up searched
+   for `[LOG_ENTRY type=PROMPT num=N` with `lastIndexOf`, so it could have matched the
+   quoted example instead of the real entry. It happened to be a no-op, because the
+   example's lines are indented. I anchored the search to the full header line,
+   including this session's id and a preceding newline.
