@@ -49,8 +49,8 @@ export function AccountMenu({ user }: { user: U }) {
       >
         <span className="block max-w-32 truncate text-xs">Hello, {first ?? 'sign in'}</span>
         <span className="flex items-center gap-1 text-sm font-bold">
-          <span className="hidden sm:inline">Account &amp; Lists</span>
-          <span className="sm:hidden">Account</span>
+          <span className="hidden whitespace-nowrap lg:inline">Account &amp; Lists</span>
+          <span className="lg:hidden">Account</span>
           <svg aria-hidden viewBox="0 0 10 6" className="h-1.5 w-2 fill-gray-400">
             <path d="M0 0h10L5 6z" />
           </svg>

@@ -51,7 +51,7 @@ export async function Header() {
 
           <div className="ml-auto flex items-center md:ml-0">
             <AccountMenu user={user} />
-            <Link href="/orders" className="nav-hover hidden px-2 py-1 leading-tight md:block">
+            <Link href="/orders" className="nav-hover hidden px-2 py-1 leading-tight whitespace-nowrap lg:block">
               <span className="block text-xs">Returns</span>
               <span className="block text-sm font-bold">&amp; Orders</span>
             </Link>

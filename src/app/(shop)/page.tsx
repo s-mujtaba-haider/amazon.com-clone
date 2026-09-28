@@ -24,6 +24,8 @@ const QUADS = [
   { title: 'Mobile accessories', cats: ['mobile-accessories'], href: '/s?category=mobile-accessories' },
 ];
 
+const CATEGORY_ROW = ['smartphones', 'laptops', 'groceries', 'beauty', 'womens-dresses', 'mens-shoes', 'furniture', 'kitchen-accessories', 'sports-accessories', 'fragrances', 'womens-watches', 'sunglasses', 'tablets', 'vehicle'];
+
 function quadItems(cats: string[]) {
   if (cats.length === 1) return byCategory(cats[0], 4);
   return cats.map(c => byCategory(c, 1)[0]).filter(Boolean);
@@ -36,10 +38,10 @@ export default async function Home() {
       <div className="mx-auto max-w-[1500px]">
         <HeroCarousel slides={SLIDES} />
 
-        <div className="relative z-10 -mt-24 grid gap-5 px-3 sm:-mt-40 sm:grid-cols-2 sm:px-5 lg:-mt-52 lg:grid-cols-4">
+        <div className="relative z-10 -mt-10 grid grid-cols-2 gap-2.5 px-2.5 sm:-mt-40 sm:gap-5 sm:px-5 lg:-mt-52 lg:grid-cols-4">
           {!user && (
-            <section className="card flex flex-col">
-              <h2 className="text-xl font-bold">Sign in for the best experience</h2>
+            <section className="card col-span-2 flex flex-col rounded-lg sm:col-span-1 sm:rounded-none">
+              <h2 className="text-lg font-bold sm:text-xl">Sign in for the best experience</h2>
               <p className="mt-2 text-sm text-muted">Track orders, save items for later, and check out in seconds.</p>
               <Link href="/signin" className="btn-cta mt-4 w-full py-2">
                 Sign in securely
@@ -58,20 +60,20 @@ export default async function Home() {
           {QUADS.slice(0, user ? 8 : 7).map(q => {
             const items = quadItems(q.cats);
             return (
-              <section key={q.title} className="card flex flex-col">
-                <h2 className="mb-3 text-xl font-bold">{q.title}</h2>
-                <div className="grid grid-cols-2 gap-3">
+              <section key={q.title} className="flex flex-col rounded-lg bg-white p-3 sm:rounded-none sm:p-5">
+                <h2 className="mb-2 text-[15px] leading-tight font-bold sm:mb-3 sm:text-xl">{q.title}</h2>
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
                   {items.map(p => (
                     <Link key={p.id} href={`/dp/${p.id}`} className="group">
                       <div className="flex aspect-square items-center justify-center bg-[#f7f7f7] p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={p.thumbnail} alt="" loading="lazy" className="max-h-full object-contain mix-blend-multiply transition-transform group-hover:scale-105" />
                       </div>
-                      <span className="mt-1 line-clamp-1 text-xs">{q.cats.length > 1 ? categoryLabel(p.category) : p.title}</span>
+                      <span className="mt-1 line-clamp-1 hidden text-xs sm:block">{q.cats.length > 1 ? categoryLabel(p.category) : p.title}</span>
                     </Link>
                   ))}
                 </div>
-                <Link href={q.href} className="link mt-auto pt-3 text-sm">
+                <Link href={q.href} className="link mt-auto pt-2 text-xs sm:pt-3 sm:text-sm">
                   Shop now
                 </Link>
               </section>
@@ -79,7 +81,27 @@ export default async function Home() {
           })}
         </div>
 
-        <div className="mt-5 space-y-5 px-3 sm:px-5">
+        <section className="mx-2.5 mt-2.5 rounded-lg bg-white p-4 sm:mx-5 sm:mt-5 sm:rounded-none sm:p-5">
+          <h2 className="mb-3 text-lg font-bold sm:text-xl">Shop by category</h2>
+          <ul className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-1 sm:gap-5">
+            {CATEGORY_ROW.map(c => {
+              const p = byCategory(c, 1)[0];
+              return (
+                <li key={c} className="shrink-0">
+                  <Link href={`/s?category=${c}`} className="group flex w-[72px] flex-col items-center gap-1.5 text-center sm:w-24">
+                    <span className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-[#f3f3f3] ring-2 ring-transparent transition group-hover:ring-accent sm:h-24 sm:w-24">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.thumbnail} alt="" loading="lazy" className="h-4/5 w-4/5 object-contain mix-blend-multiply" />
+                    </span>
+                    <span className="text-xs leading-tight sm:text-sm">{categoryLabel(c)}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <div className="mt-2.5 space-y-2.5 px-2.5 sm:mt-5 sm:space-y-5 sm:px-5">
           <ProductCarousel title="Today's Deals" items={topDeals(16)} href="/s?deals=1&sort=discount" showPrice />
           <ProductCarousel title="Best Sellers across the store" items={bestSellers(16)} href="/s?sort=rating" />
           <ProductCarousel title="Top picks in Laptops & Tablets" items={[...byCategory('laptops'), ...byCategory('tablets')]} href="/s?category=laptops" />

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Stars } from '@/components/product/Stars';
 import { SortSelect } from '@/components/search/SortSelect';
+import { FilterSheet } from '@/components/search/FilterSheet';
 import { deliveryDate } from '@/lib/format';
 import { categoryLabel, search, type SortKey } from '@/lib/products';
 
@@ -61,6 +62,69 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     deals && { text: 'Deals', clear: href({ deals: undefined }) },
   ].filter(Boolean) as { text: string; clear: string }[];
 
+  const filters = (
+    <div className="space-y-5">
+        <FilterGroup title="Department">
+          {category && (
+            <Link href={href({ category: undefined, brand: undefined })} className="mb-1 block text-xs hover:text-link-hover">
+              ‹ Any Department
+            </Link>
+          )}
+          {categories.map(([c, n]) => (
+            <Link key={c} href={href({ category: c, brand: undefined })} className={`block py-0.5 hover:text-link-hover ${c === category ? 'font-bold' : ''}`}>
+              {categoryLabel(c)} <span className="text-muted">({n})</span>
+            </Link>
+          ))}
+        </FilterGroup>
+
+        <FilterGroup title="Customer Reviews">
+          {[4, 3, 2].map(r => (
+            <Link key={r} href={href({ rating: rating === r ? undefined : r })} className={`flex items-center gap-1 py-0.5 hover:text-link-hover ${rating === r ? 'font-bold' : ''}`}>
+              <Stars rating={r} size={16} /> & Up
+            </Link>
+          ))}
+        </FilterGroup>
+
+        {brands.length > 0 && (
+          <FilterGroup title="Brands">
+            {brands.map(([b]) => (
+              <Link key={b} href={href({ brand: brand === b ? undefined : b })} className="flex items-center gap-2 py-0.5 hover:text-link-hover">
+                <span aria-hidden className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${brand === b ? 'border-link bg-link text-[10px] text-white' : 'border-[#888]'}`}>
+                  {brand === b && '✓'}
+                </span>
+                {b}
+              </Link>
+            ))}
+          </FilterGroup>
+        )}
+
+        <FilterGroup title="Price">
+          {PRICE_BANDS.map(([t, lo, hi]) => {
+            const on = min === lo && max === hi;
+            return (
+              <Link key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} className={`block py-0.5 hover:text-link-hover ${on ? 'font-bold' : ''}`}>
+                {t}
+              </Link>
+            );
+          })}
+          <form action="/s" className="mt-2 flex items-center gap-1">
+            {q && <input type="hidden" name="q" value={q} />}
+            {category && <input type="hidden" name="category" value={category} />}
+            {brand && <input type="hidden" name="brand" value={brand} />}
+            <input name="min" inputMode="numeric" placeholder="$ Min" defaultValue={min} className="field w-16 py-1" aria-label="Minimum price" />
+            <input name="max" inputMode="numeric" placeholder="$ Max" defaultValue={max} className="field w-16 py-1" aria-label="Maximum price" />
+            <button className="btn-secondary px-3 py-1">Go</button>
+          </form>
+        </FilterGroup>
+
+        <FilterGroup title="Deals & Discounts">
+          <Link href={href({ deals: deals ? undefined : '1' })} className={`block py-0.5 hover:text-link-hover ${deals ? 'font-bold' : ''}`}>
+            All Discounts
+          </Link>
+        </FilterGroup>
+    </div>
+  );
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2 text-sm shadow-sm">
@@ -72,70 +136,16 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </div>
 
       <div className="mx-auto flex max-w-[1500px] gap-6 px-4 py-4">
-        <aside className="hidden w-60 shrink-0 space-y-5 text-sm md:block" aria-label="Filters">
-          <FilterGroup title="Department">
-            {category && (
-              <Link href={href({ category: undefined, brand: undefined })} className="mb-1 block text-xs hover:text-link-hover">
-                ‹ Any Department
-              </Link>
-            )}
-            {categories.map(([c, n]) => (
-              <Link key={c} href={href({ category: c, brand: undefined })} className={`block py-0.5 hover:text-link-hover ${c === category ? 'font-bold' : ''}`}>
-                {categoryLabel(c)} <span className="text-muted">({n})</span>
-              </Link>
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Customer Reviews">
-            {[4, 3, 2].map(r => (
-              <Link key={r} href={href({ rating: rating === r ? undefined : r })} className={`flex items-center gap-1 py-0.5 hover:text-link-hover ${rating === r ? 'font-bold' : ''}`}>
-                <Stars rating={r} size={16} /> & Up
-              </Link>
-            ))}
-          </FilterGroup>
-
-          {brands.length > 0 && (
-            <FilterGroup title="Brands">
-              {brands.map(([b]) => (
-                <Link key={b} href={href({ brand: brand === b ? undefined : b })} className="flex items-center gap-2 py-0.5 hover:text-link-hover">
-                  <span aria-hidden className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${brand === b ? 'border-link bg-link text-[10px] text-white' : 'border-[#888]'}`}>
-                    {brand === b && '✓'}
-                  </span>
-                  {b}
-                </Link>
-              ))}
-            </FilterGroup>
-          )}
-
-          <FilterGroup title="Price">
-            {PRICE_BANDS.map(([t, lo, hi]) => {
-              const on = min === lo && max === hi;
-              return (
-                <Link key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} className={`block py-0.5 hover:text-link-hover ${on ? 'font-bold' : ''}`}>
-                  {t}
-                </Link>
-              );
-            })}
-            <form action="/s" className="mt-2 flex items-center gap-1">
-              {q && <input type="hidden" name="q" value={q} />}
-              {category && <input type="hidden" name="category" value={category} />}
-              {brand && <input type="hidden" name="brand" value={brand} />}
-              <input name="min" inputMode="numeric" placeholder="$ Min" defaultValue={min} className="field w-16 py-1" aria-label="Minimum price" />
-              <input name="max" inputMode="numeric" placeholder="$ Max" defaultValue={max} className="field w-16 py-1" aria-label="Maximum price" />
-              <button className="btn-secondary px-3 py-1">Go</button>
-            </form>
-          </FilterGroup>
-
-          <FilterGroup title="Deals & Discounts">
-            <Link href={href({ deals: deals ? undefined : '1' })} className={`block py-0.5 hover:text-link-hover ${deals ? 'font-bold' : ''}`}>
-              All Discounts
-            </Link>
-          </FilterGroup>
+        <aside className="hidden w-52 shrink-0 lg:w-60 space-y-5 text-sm md:block" aria-label="Filters">
+          {filters}
         </aside>
 
         <section className="min-w-0 flex-1">
           {/* mobile: category chips instead of the sidebar */}
-          <div className="no-scrollbar mb-3 flex gap-2 overflow-x-auto md:hidden">
+          <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 md:hidden">
+            <FilterSheet activeCount={activeFilters.length} resultCount={results.length}>
+              {filters}
+            </FilterSheet>
             {categories.slice(0, 12).map(([c]) => (
               <Link key={c} href={href({ category: c === category ? undefined : c, brand: undefined })} className={`shrink-0 rounded-full border px-3 py-1 text-sm ${c === category ? 'border-link bg-[#edfdff] font-bold' : 'border-line bg-white'}`}>
                 {categoryLabel(c)}
@@ -171,7 +181,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {shown.map(p => (
                 <ProductCard key={p.id} p={p} deliveryLabel={deliveryLabel} />
               ))}

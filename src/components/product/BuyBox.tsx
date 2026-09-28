@@ -29,7 +29,7 @@ export function BuyBox({
   const free = product.price >= FREE_SHIPPING_MIN;
 
   return (
-    <aside className="h-fit rounded-lg border border-line p-4 text-sm lg:sticky lg:top-32" aria-label="Buy box">
+    <aside className="h-fit rounded-lg border border-line p-4 text-sm md:col-span-2 lg:sticky lg:top-32 lg:col-span-1" aria-label="Buy box">
       <Price price={product.price} showList={false} />
       <p className="mt-3">
         {free ? (
@@ -82,6 +82,19 @@ export function BuyBox({
             </button>
           </div>
         </>
+      )}
+
+      {inStock && (
+        <div className="fixed inset-x-0 bottom-[calc(58px+env(safe-area-inset-bottom))] z-30 flex items-center gap-3 border-t border-line bg-white/95 px-3 py-2 shadow-[0_-4px_12px_rgba(0,0,0,.08)] backdrop-blur md:hidden">
+          <div className="min-w-0 flex-1">
+            <p className="text-lg leading-none font-bold">${product.price.toFixed(2)}</p>
+            <p className="truncate text-xs text-success">{free ? 'FREE delivery' : 'In stock'} · {delivery.split(', ')[1]}</p>
+          </div>
+          <AddToCartButton product={product} qty={qty} compact className="px-4 py-2 text-sm" />
+          <button type="button" className="btn-buy px-4 py-2 text-sm" onClick={() => { add(product, qty); router.push('/checkout'); }}>
+            Buy Now
+          </button>
+        </div>
       )}
 
       <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">

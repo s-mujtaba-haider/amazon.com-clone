@@ -7,7 +7,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
   const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
 
   return (
-    <div className="flex flex-col-reverse gap-3 lg:sticky lg:top-32 lg:flex-row lg:self-start">
+    <div className="flex min-w-0 flex-col-reverse gap-3 md:sticky md:top-32 md:self-start lg:sticky lg:top-32 lg:flex-row lg:self-start">
       {images.length > 1 && (
         <ul className="no-scrollbar flex gap-2 overflow-x-auto lg:flex-col" aria-label="Product images">
           {images.map((src, i) => (
@@ -29,7 +29,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
         </ul>
       )}
       <div
-        className="relative flex aspect-square flex-1 cursor-zoom-in items-center justify-center overflow-hidden"
+        className="relative flex aspect-square max-h-[min(80vw,520px)] flex-1 cursor-zoom-in items-center justify-center overflow-hidden"
         onMouseMove={e => {
           const r = e.currentTarget.getBoundingClientRect();
           setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });

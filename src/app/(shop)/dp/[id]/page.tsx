@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         )}
       </nav>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_260px]">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_260px]">
         <Gallery images={p.images} title={p.title} />
 
         <div className="min-w-0">

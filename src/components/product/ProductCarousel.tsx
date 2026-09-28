@@ -12,9 +12,9 @@ export function ProductCarousel({ title, items, href, showPrice = false }: { tit
   const scroll = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * ref.current.clientWidth * 0.8, behavior: 'smooth' });
 
   return (
-    <section className="card">
+    <section className="rounded-lg bg-white p-4 sm:rounded-none sm:p-5">
       <div className="mb-3 flex items-baseline gap-4">
-        <h2 className="text-xl font-bold">{title}</h2>
+        <h2 className="text-lg font-bold sm:text-xl">{title}</h2>
         {href && (
           <Link href={href} className="link text-sm">
             See all
@@ -27,8 +27,8 @@ export function ProductCarousel({ title, items, href, showPrice = false }: { tit
         </button>
         <div ref={ref} className="no-scrollbar flex snap-x gap-4 overflow-x-auto scroll-smooth">
           {items.map(p => (
-            <Link key={p.id} href={`/dp/${p.id}`} className="w-40 shrink-0 snap-start sm:w-48">
-              <div className="flex h-40 items-center justify-center rounded bg-[#f7f7f7] p-2 sm:h-48">
+            <Link key={p.id} href={`/dp/${p.id}`} className="w-32 shrink-0 snap-start sm:w-48">
+              <div className="flex h-32 items-center justify-center rounded bg-[#f7f7f7] p-2 sm:h-48">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.thumbnail} alt={p.title} loading="lazy" className="max-h-full max-w-full object-contain mix-blend-multiply" />
               </div>
