@@ -83,7 +83,7 @@ export function SignInForm({ next }: { next: string }) {
       </form>
 
       <p className="mt-5 text-xs leading-relaxed">
-        By continuing, you agree to Shopora&apos;s <Link href="/" className="link">Conditions of Use</Link> and{' '}
+        By continuing, you agree to Kyro&apos;s <Link href="/" className="link">Conditions of Use</Link> and{' '}
         <Link href="/" className="link">Privacy Notice</Link>.
       </p>
     </div>

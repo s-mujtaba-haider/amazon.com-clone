@@ -4,12 +4,14 @@ import { CartProvider } from '@/components/cart/CartProvider';
 import { AddedToCartToast } from '@/components/cart/AddedToCartToast';
 import { WishlistProvider } from '@/components/wishlist/WishlistProvider';
 import { RevealRoot } from '@/components/motion/RevealRoot';
+import { ScrollProgress } from '@/components/motion/ScrollProgress';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-jakarta' });
 
 export const metadata: Metadata = {
-  title: { default: 'Shopora: Online Shopping for Electronics, Fashion, Home & more', template: '%s | Shopora' },
+  title: { default: 'Kyro: Online Shopping for Electronics, Fashion, Home & more', template: '%s | Kyro' },
+  applicationName: 'Kyro',
   description: 'Shop deals on electronics, fashion, beauty, home and more. Fast delivery and easy returns.',
 };
 
@@ -29,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: REVEAL_BOOT }} />
       </head>
       <body className="flex min-h-dvh flex-col">
+        <ScrollProgress />
         <CartProvider>
           <WishlistProvider>
             {children}

@@ -6,12 +6,12 @@ const COLS = [
   { title: 'Shop', links: [['Today’s Deals', '/s?deals=1&sort=discount'], ['Best Sellers', '/s?sort=rating'], ['Electronics', '/s?category=smartphones'], ['Home & Kitchen', '/s?category=kitchen-accessories'], ['Fashion', '/s?category=womens-dresses']] },
   { title: 'Your account', links: [['Sign in', '/signin'], ['Create account', '/register'], ['Your orders', '/orders'], ['Wishlist', '/wishlist'], ['Cart', '/cart']] },
   { title: 'Help', links: [['Shipping & delivery', '/'], ['Returns & refunds', '/orders'], ['Payment options', '/'], ['Contact us', '/']] },
-  { title: 'Company', links: [['About Shopora', '/'], ['Careers', '/'], ['Sustainability', '/'], ['Press', '/']] },
+  { title: 'Company', links: [['About Kyro', '/'], ['Careers', '/'], ['Sustainability', '/'], ['Press', '/']] },
 ] as const;
 
 export function Footer() {
   return (
-    <footer className="mt-auto bg-ink text-white">
+    <footer className="relative mt-auto overflow-hidden bg-ink text-white">
       <BackToTop />
       <div className="gutter grid gap-10 py-12 lg:grid-cols-[1.3fr_2fr]">
         <div className="max-w-sm">
@@ -44,9 +44,12 @@ export function Footer() {
           ))}
         </div>
       </div>
+      <p aria-hidden data-reveal className="gutter -mb-[0.18em] overflow-hidden bg-gradient-to-b from-white/[.14] to-white/0 bg-clip-text text-center text-[clamp(4.5rem,20vw,17rem)] leading-none font-extrabold tracking-tighter text-transparent select-none">
+        kyro.
+      </p>
       <div className="border-t border-white/10">
         <div className="gutter flex flex-col gap-2 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Shopora · A portfolio demo, not affiliated with any real retailer. No real payments are taken.</p>
+          <p>© {new Date().getFullYear()} Kyro · A portfolio demo, not affiliated with any real retailer. No real payments are taken.</p>
           <p>Product data &amp; images: DummyJSON</p>
         </div>
       </div>

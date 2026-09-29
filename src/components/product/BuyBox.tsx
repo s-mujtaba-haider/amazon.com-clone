@@ -1,12 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { MAX_QTY, useCart } from '@/components/cart/CartProvider';
 import { FREE_SHIPPING_MIN } from '@/lib/format';
 import type { CartProduct } from '@/lib/types';
 import { Price } from './Price';
 import { AddToCartButton } from './AddToCartButton';
+import { QuantityPicker } from './QuantityPicker';
 
 export function BuyBox({
   product,
@@ -22,6 +24,8 @@ export function BuyBox({
   returnPolicy: string;
 }) {
   const [qty, setQty] = useState(1);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { add } = useCart();
   const router = useRouter();
   const max = Math.min(MAX_QTY, product.stock);
@@ -37,11 +41,11 @@ export function BuyBox({
       <p className="mt-3">
         {free ? (
           <>
-            <span className="text-link">FREE delivery</span> <b>{delivery}</b>
+            <span className="font-semibold text-success">FREE delivery</span> <b>{delivery}</b>
           </>
         ) : (
           <>
-            <span className="text-link">$5.99 delivery</span> <b>{delivery}</b>. Free on orders over ${FREE_SHIPPING_MIN}.
+            <span className="font-semibold">$5.99 delivery</span> <b>{delivery}</b>. Free on orders over ${FREE_SHIPPING_MIN}.
           </>
         )}
       </p>
@@ -49,10 +53,10 @@ export function BuyBox({
         Or fastest delivery <b>{fastest}</b> if you order today.
       </p>
       <p className="mt-2 flex items-center gap-1 text-xs">
-        <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-[#0f1111]">
+        <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-brand">
           <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
         </svg>
-        <span className="text-link">Deliver to United States</span>
+        <span className="text-muted">Deliver to United States</span>
       </p>
 
       <p className={`mt-4 text-lg ${inStock ? (product.stock <= 10 ? 'text-deal' : 'text-success') : 'text-deal'}`}>
@@ -61,16 +65,7 @@ export function BuyBox({
 
       {inStock && (
         <>
-          <label className="mt-4 flex items-center justify-between gap-2 rounded-xl border border-line bg-[#fafbfe] px-3 py-2 text-sm font-medium">
-            Quantity:
-            <select value={qty} onChange={e => setQty(Number(e.target.value))} className="cursor-pointer bg-transparent font-bold outline-none">
-              {Array.from({ length: max }, (_, i) => i + 1).map(n => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
+          <QuantityPicker value={qty} max={max} onChange={setQty} />
           <div className="mt-4 space-y-2">
             <AddToCartButton product={product} qty={qty} className="py-3 text-base" />
             <button
@@ -87,8 +82,9 @@ export function BuyBox({
         </>
       )}
 
-      {inStock && (
-        <div className="fixed inset-x-2 bottom-[calc(66px+env(safe-area-inset-bottom))] z-30 flex items-center gap-2 rounded-2xl bg-white/95 p-2.5 pl-4 shadow-[var(--shadow-lift)] ring-1 ring-black/5 backdrop-blur md:hidden">
+      {/* phone buy bar: portaled so page-entrance transforms can't pull it out of the viewport */}
+      {inStock && mounted && createPortal(
+        <div className="fixed inset-x-2 animate-[sheet-up_.4s_.2s_cubic-bezier(.2,.8,.2,1)_both] bottom-[calc(66px+env(safe-area-inset-bottom))] z-30 flex items-center gap-2 rounded-2xl bg-white/95 p-2.5 pl-4 shadow-[var(--shadow-lift)] ring-1 ring-black/5 backdrop-blur md:hidden">
           <div className="min-w-0 flex-1">
             <p className="text-lg leading-none font-bold">${product.price.toFixed(2)}</p>
             <p className="truncate text-xs text-success">{free ? 'FREE delivery' : 'In stock'} · {delivery.split(', ')[1]}</p>
@@ -97,18 +93,19 @@ export function BuyBox({
           <button type="button" className="btn-buy px-3.5 py-2.5 text-sm" onClick={() => { add(product, qty); router.push('/checkout'); }}>
             Buy Now
           </button>
-        </div>
+        </div>,
+        document.body,
       )}
 
       <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-line pt-4 text-xs">
         <dt className="text-muted">Ships from</dt>
-        <dd>Shopora</dd>
+        <dd>Kyro</dd>
         <dt className="text-muted">Sold by</dt>
-        <dd>{product.brand ?? 'Shopora'}</dd>
+        <dd>{product.brand ?? 'Kyro'}</dd>
         <dt className="text-muted">Returns</dt>
-        <dd className="text-link">{returnPolicy}</dd>
+        <dd>{returnPolicy}</dd>
         <dt className="text-muted">Payment</dt>
-        <dd className="text-link">Secure transaction</dd>
+        <dd className="text-success">Secure transaction</dd>
       </dl>
     </aside>
   );

@@ -16,37 +16,41 @@ export default async function OrdersPage() {
 
   return (
     <div className="gutter max-w-[1280px] py-6 sm:py-8">
-      <nav className="mb-2 text-sm text-muted">
-        <Link href="/" className="link">Your Account</Link> › <span className="text-link-hover">Your Orders</span>
+      <nav aria-label="Breadcrumb" className="breadcrumb mb-2">
+        <Link href="/">Home</Link>
+        <span aria-hidden>›</span>
+        <span className="font-semibold text-ink">Your orders</span>
       </nav>
-      <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Your Orders</h1>
-      <p className="mb-4 text-sm">
+      <h1 className="page-title">Your orders</h1>
+      <p className="mt-1 mb-5 text-sm text-muted">
         <b>{orders.length} {orders.length === 1 ? 'order' : 'orders'}</b> placed
       </p>
 
       {orders.length === 0 ? (
-        <div className="rounded-3xl bg-white p-10 text-center shadow-[var(--shadow-soft)]">
-          <p className="text-lg">You haven&apos;t placed any orders yet.</p>
+        <div className="empty-state" data-reveal>
+          <span aria-hidden className="empty-icon">📦</span>
+          <p className="mt-5 text-lg font-bold">You haven&apos;t placed any orders yet.</p>
+          <p className="mt-1 text-sm text-muted">When you do, you&apos;ll be able to track them here.</p>
           <Link href="/" className="btn-cta mt-4">
             Start shopping
           </Link>
         </div>
       ) : (
         <ul className="space-y-5">
-          {orders.map(o => (
-            <li key={o.id} className="overflow-hidden rounded-3xl bg-white shadow-[var(--shadow-soft)]">
+          {orders.map((o, n) => (
+            <li key={o.id} data-reveal style={{ '--reveal-delay': `${Math.min(n, 4) * 80}ms` } as React.CSSProperties} className="overflow-hidden rounded-3xl bg-white shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-lift)]">
               <div className="grid grid-cols-2 gap-3 bg-[#f7f8fc] px-5 py-4 text-xs text-muted sm:grid-cols-[auto_auto_auto_1fr]">
                 <div>
                   <p className="uppercase">Order placed</p>
-                  <p className="text-sm text-[#0f1111]">{new Date(o.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p className="text-sm text-ink">{new Date(o.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
                 <div className="sm:px-6">
                   <p className="uppercase">Total</p>
-                  <p className="text-sm text-[#0f1111]">{money(o.total)}</p>
+                  <p className="text-sm text-ink">{money(o.total)}</p>
                 </div>
                 <div>
                   <p className="uppercase">Ship to</p>
-                  <p className="text-sm text-link">{o.address.fullName}</p>
+                  <p className="text-sm text-ink">{o.address.fullName}</p>
                 </div>
                 <div className="sm:text-right">
                   <p className="uppercase">Order # {o.id}</p>
@@ -63,9 +67,9 @@ export default async function OrdersPage() {
                     return (
                       <li key={i.id} className="flex gap-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={i.thumbnail} alt="" className="h-20 w-20 rounded-2xl bg-[#f3f4f8] object-contain p-1.5 mix-blend-multiply" />
+                        <img src={i.thumbnail} alt="" className="h-20 w-20 shrink-0 rounded-2xl bg-[#f3f4f8] object-contain p-1.5 mix-blend-multiply" />
                         <div className="min-w-0 flex-1 text-sm">
-                          <Link href={`/dp/${i.id}`} className="link line-clamp-2">
+                          <Link href={`/dp/${i.id}`} className="line-clamp-2 font-semibold hover:text-brand">
                             {i.title}
                           </Link>
                           <p className="text-muted">Qty {i.qty} · {money(i.price)}</p>

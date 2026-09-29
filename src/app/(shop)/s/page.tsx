@@ -63,72 +63,71 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   ].filter(Boolean) as { text: string; clear: string }[];
 
   const filters = (
-    <div className="space-y-5">
-        <FilterGroup title="Department">
-          {category && (
-            <Link href={href({ category: undefined, brand: undefined })} className="mb-1 block text-xs hover:text-brand">
-              ‹ Any Department
-            </Link>
-          )}
-          {categories.map(([c, n]) => (
-            <Link key={c} href={href({ category: c, brand: undefined })} className={`block py-0.5 hover:text-brand ${c === category ? 'font-bold text-brand' : ''}`}>
-              {categoryLabel(c)} <span className="text-muted">({n})</span>
-            </Link>
-          ))}
-        </FilterGroup>
-
-        <FilterGroup title="Customer Reviews">
-          {[4, 3, 2].map(r => (
-            <Link key={r} href={href({ rating: rating === r ? undefined : r })} className={`flex items-center gap-1 py-0.5 hover:text-brand ${rating === r ? 'font-bold' : ''}`}>
-              <Stars rating={r} size={16} /> & Up
-            </Link>
-          ))}
-        </FilterGroup>
-
-        {brands.length > 0 && (
-          <FilterGroup title="Brands">
-            {brands.map(([b]) => (
-              <Link key={b} href={href({ brand: brand === b ? undefined : b })} className="flex items-center gap-2 py-0.5 hover:text-brand">
-                <span aria-hidden className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${brand === b ? 'border-link bg-link text-[10px] text-white' : 'border-[#888]'}`}>
-                  {brand === b && '✓'}
-                </span>
-                {b}
-              </Link>
-            ))}
-          </FilterGroup>
+    <div className="space-y-6">
+      <FilterGroup title="Department">
+        {category && (
+          <Opt href={href({ category: undefined, brand: undefined })}>
+            <span className="text-muted">‹ Any department</span>
+          </Opt>
         )}
+        {categories.map(([c, n]) => (
+          <Opt key={c} href={href({ category: c, brand: undefined })} on={c === category}>
+            <span className="flex-1">{categoryLabel(c)}</span>
+            <span className="text-xs text-muted">{n}</span>
+          </Opt>
+        ))}
+      </FilterGroup>
 
-        <FilterGroup title="Price">
-          {PRICE_BANDS.map(([t, lo, hi]) => {
-            const on = min === lo && max === hi;
-            return (
-              <Link key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} className={`block py-0.5 hover:text-brand ${on ? 'font-bold' : ''}`}>
-                {t}
-              </Link>
-            );
-          })}
-          <form action="/s" className="mt-2 flex items-center gap-1">
-            {q && <input type="hidden" name="q" value={q} />}
-            {category && <input type="hidden" name="category" value={category} />}
-            {brand && <input type="hidden" name="brand" value={brand} />}
-            <input name="min" inputMode="numeric" placeholder="$ Min" defaultValue={min} className="field w-16 py-1" aria-label="Minimum price" />
-            <input name="max" inputMode="numeric" placeholder="$ Max" defaultValue={max} className="field w-16 py-1" aria-label="Maximum price" />
-            <button className="btn-secondary px-3 py-1">Go</button>
-          </form>
-        </FilterGroup>
+      <FilterGroup title="Customer reviews">
+        {[4, 3, 2].map(r => (
+          <Opt key={r} href={href({ rating: rating === r ? undefined : r })} on={rating === r}>
+            <Stars rating={r} size={16} /> <span>&amp; up</span>
+          </Opt>
+        ))}
+      </FilterGroup>
 
-        <FilterGroup title="Deals & Discounts">
-          <Link href={href({ deals: deals ? undefined : '1' })} className={`block py-0.5 hover:text-brand ${deals ? 'font-bold' : ''}`}>
-            All Discounts
-          </Link>
+      {brands.length > 0 && (
+        <FilterGroup title="Brands">
+          {brands.map(([b]) => (
+            <Opt key={b} href={href({ brand: brand === b ? undefined : b })} on={brand === b} check>
+              {b}
+            </Opt>
+          ))}
         </FilterGroup>
+      )}
+
+      <FilterGroup title="Price">
+        {PRICE_BANDS.map(([t, lo, hi]) => {
+          const on = min === lo && max === hi;
+          return (
+            <Opt key={t} href={on ? href({ min: undefined, max: undefined }) : href({ min: lo, max: hi })} on={on}>
+              {t}
+            </Opt>
+          );
+        })}
+        <form action="/s" className="mt-2 flex items-center gap-1.5">
+          {/* keep every other active filter when a custom range is applied */}
+          {Object.entries({ q: q || undefined, category, brand, rating, deals: deals ? '1' : undefined, sort: sort !== 'featured' ? sort : undefined }).map(([k, v]) =>
+            v !== undefined ? <input key={k} type="hidden" name={k} value={String(v)} /> : null,
+          )}
+          <input name="min" inputMode="numeric" placeholder="$ Min" defaultValue={min} className="field min-w-0 flex-1 px-2.5 py-1.5 text-sm" aria-label="Minimum price" />
+          <input name="max" inputMode="numeric" placeholder="$ Max" defaultValue={max} className="field min-w-0 flex-1 px-2.5 py-1.5 text-sm" aria-label="Maximum price" />
+          <button className="btn-secondary px-3 py-1.5">Go</button>
+        </form>
+      </FilterGroup>
+
+      <FilterGroup title="Deals & discounts">
+        <Opt href={href({ deals: deals ? undefined : '1' })} on={deals} check>
+          Discounted items only
+        </Opt>
+      </FilterGroup>
     </div>
   );
 
   return (
     <div>
       <div className="gutter flex flex-wrap items-center justify-between gap-2 pt-4 pb-2 text-sm sm:pt-6">
-        <p className="text-muted">
+        <p className="w-full text-muted sm:w-auto">
           {results.length === 0 ? 'No' : `${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, results.length)} of`} {results.length > 0 && results.length} results for{' '}
           <span className="font-bold text-ink">{label}</span>
         </p>
@@ -136,13 +135,13 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </div>
 
       <div className="gutter flex gap-6 pb-10 xl:gap-8">
-        <aside className="sticky top-[132px] hidden max-h-[calc(100dvh-148px)] w-56 shrink-0 self-start overflow-y-auto rounded-2xl bg-white p-5 text-sm shadow-[var(--shadow-soft)] md:block lg:w-64" aria-label="Filters">
+        <aside data-reveal="left" className="no-scrollbar sticky top-[132px] hidden max-h-[calc(100dvh-148px)] w-56 shrink-0 self-start overflow-y-auto rounded-3xl bg-white p-4 text-sm shadow-[var(--shadow-soft)] md:block lg:w-64" aria-label="Filters">
           {filters}
         </aside>
 
         <section className="min-w-0 flex-1">
           {/* mobile: category chips instead of the sidebar */}
-          <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 md:hidden">
+          <div className="no-scrollbar -mx-3 mb-3 flex gap-2 overflow-x-auto px-3 sm:-mx-6 sm:px-6 md:hidden">
             <FilterSheet activeCount={activeFilters.length} resultCount={results.length}>
               {filters}
             </FilterSheet>
@@ -169,11 +168,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             </div>
           )}
 
-          <h1 className="mb-4 text-2xl font-extrabold tracking-tight sm:text-3xl">{q ? <>Results for &ldquo;{q}&rdquo;</> : category ? categoryLabel(category) : deals ? "Today's Deals" : 'All products'}</h1>
+          <h1 className="page-title mb-4">{q ? <>Results for &ldquo;{q}&rdquo;</> : category ? categoryLabel(category) : deals ? "Today's Deals" : 'All products'}</h1>
 
           {shown.length === 0 ? (
-            <div className="rounded-3xl bg-white p-10 text-center shadow-[var(--shadow-soft)]">
-              <p className="text-lg font-bold">No results for {label}.</p>
+            <div className="empty-state">
+              <span aria-hidden className="empty-icon">🔍</span>
+              <p className="mt-5 text-lg font-bold">No results for {label}.</p>
               <p className="mt-2 text-sm text-muted">Try checking your spelling, using more general terms, or removing filters.</p>
               <Link href="/s" className="btn-cta mt-4">
                 Browse all products
@@ -192,21 +192,21 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               <ul className="flex flex-wrap justify-center gap-1.5 text-sm">
                 <li>
                   {page > 1 ? (
-                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] hover:bg-brand-50" href={href({ page: page - 1 })}>‹ Previous</Link>
+                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] transition hover:bg-brand-50 hover:text-brand" href={href({ page: page - 1 })}>‹ Previous</Link>
                   ) : (
                     <span className="block rounded-xl px-4 py-2 text-[#b0b7c5]">‹ Previous</span>
                   )}
                 </li>
                 {Array.from({ length: pages }, (_, i) => i + 1).map(n => (
                   <li key={n}>
-                    <Link aria-current={n === page ? 'page' : undefined} className={`block min-w-10 rounded-xl px-3.5 py-2 text-center font-semibold ${n === page ? 'bg-ink text-white' : 'bg-white shadow-[var(--shadow-soft)] hover:bg-brand-50'}`} href={href({ page: n })}>
+                    <Link aria-current={n === page ? 'page' : undefined} className={`block min-w-10 rounded-xl px-3.5 py-2 text-center font-semibold transition ${n === page ? 'bg-brand text-white shadow-[0_6px_16px_-6px_rgba(91,61,245,.6)]' : 'bg-white shadow-[var(--shadow-soft)] hover:bg-brand-50 hover:text-brand'}`} href={href({ page: n })}>
                       {n}
                     </Link>
                   </li>
                 ))}
                 <li>
                   {page < pages ? (
-                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] hover:bg-brand-50" href={href({ page: page + 1 })}>Next ›</Link>
+                    <Link className="block rounded-xl bg-white px-4 py-2 font-semibold shadow-[var(--shadow-soft)] transition hover:bg-brand-50 hover:text-brand" href={href({ page: page + 1 })}>Next ›</Link>
                   ) : (
                     <span className="block rounded-xl px-4 py-2 text-[#b0b7c5]">Next ›</span>
                   )}
@@ -223,8 +223,35 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="mb-2 text-xs font-bold tracking-wider text-muted uppercase">{title}</h2>
-      {children}
+      <h2 className="popover-label">{title}</h2>
+      <div className="space-y-0.5">{children}</div>
     </div>
+  );
+}
+
+/** One filter row: same look for departments, ratings, brands, prices and deals. `check` shows a checkbox. */
+function Opt({ href, on = false, check = false, children }: { href: string; on?: boolean; check?: boolean; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      aria-current={on ? 'true' : undefined}
+      className={`flex items-center gap-2 rounded-xl px-2.5 py-1.5 transition-colors ${on ? 'bg-brand-50 font-bold text-brand-700' : 'hover:bg-[#f5f6fa] hover:text-brand'}`}
+    >
+      {check && (
+        <span aria-hidden className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border-2 transition ${on ? 'border-brand bg-brand text-white' : 'border-[#c5cad6]'}`}>
+          {on && (
+            <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-current stroke-[4]">
+              <path d="m5 12.5 4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </span>
+      )}
+      {children}
+      {on && !check && (
+        <svg aria-hidden viewBox="0 0 24 24" className="ml-auto h-4 w-4 shrink-0 fill-none stroke-brand stroke-[3]">
+          <path d="m5 12.5 4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </Link>
   );
 }

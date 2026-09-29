@@ -64,6 +64,14 @@ export function brands(limit = 20) {
   return [...counts].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([b]) => b);
 }
 
+/** Real catalog figures for the home page stats band. */
+export function catalogStats() {
+  const brandCount = new Set(products.map(p => p.brand).filter(Boolean)).size;
+  const reviews = products.reduce((n, p) => n + p.reviews.length, 0);
+  const avgRating = products.reduce((n, p) => n + p.rating, 0) / products.length;
+  return { products: products.length, brands: brandCount, categories: categories.length, reviews, avgRating };
+}
+
 export function related(p: Product, limit = 10) {
   const same = products.filter(x => x.category === p.category && x.id !== p.id);
   const tagged = products.filter(x => x.category !== p.category && x.tags.some(t => p.tags.includes(t)));

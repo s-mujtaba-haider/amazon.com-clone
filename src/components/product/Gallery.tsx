@@ -38,9 +38,10 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          key={active}
           src={images[active]}
           alt={title}
-          className="max-h-full max-w-full object-contain mix-blend-multiply transition-transform duration-100"
+          className="max-h-full max-w-full animate-[fade-in_.35s_ease-out] object-contain mix-blend-multiply transition-transform duration-100"
           style={zoom ? { transform: 'scale(1.8)', transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
         />
       </div>

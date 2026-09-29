@@ -48,7 +48,7 @@ export function SideMenu({ categories, userName }: { categories: Cat[]; userName
 
   const drawer = (
     <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-label="Browse departments">
-      <button aria-label="Close menu" tabIndex={-1} className="absolute inset-0 animate-[fade-in_.2s_ease-out] cursor-default bg-ink/55 backdrop-blur-sm" onClick={() => setOpen(false)} />
+      <button aria-label="Close menu" tabIndex={-1} className="backdrop" onClick={() => setOpen(false)} />
       <div className="absolute inset-y-0 left-0 flex w-[min(400px,88vw)] animate-[slide-in_.28s_cubic-bezier(.2,.8,.2,1)] flex-col bg-page text-ink shadow-2xl">
         <div className="relative overflow-hidden bg-gradient-to-br from-ink via-ink-3 to-brand-700 px-5 pt-5 pb-6 text-white">
           <span aria-hidden className="absolute -top-16 -right-10 h-44 w-44 rounded-full bg-brand/50 blur-2xl" />
@@ -58,11 +58,11 @@ export function SideMenu({ categories, userName }: { categories: Cat[]; userName
                 {first ? first[0].toUpperCase() : '👋'}
               </span>
               <div>
-                <p className="text-xs text-white/60">{first ? 'Welcome back' : 'Welcome to Shopora'}</p>
+                <p className="text-xs text-white/60">{first ? 'Welcome back' : 'Welcome to Kyro'}</p>
                 <p className="text-lg font-bold">{first ? `Hi, ${first}` : 'Hello there'}</p>
               </div>
             </div>
-            <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close menu" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-xl transition hover:rotate-90 hover:bg-white/20">
+            <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close menu" className="icon-btn bg-white/10 hover:bg-white/20">
               ×
             </button>
           </div>

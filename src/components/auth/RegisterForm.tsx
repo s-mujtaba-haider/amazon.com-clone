@@ -58,11 +58,11 @@ export function RegisterForm({ next }: { next: string }) {
         )}
         {field('confirm', 'Re-enter password', 'password', 'new-password')}
         <button disabled={pending} className="btn-cta mt-3 w-full py-3 text-base">
-          {pending ? 'Creating your account…' : 'Create your Shopora account'}
+          {pending ? 'Creating your account…' : 'Create your Kyro account'}
         </button>
       </form>
       <p className="mt-5 text-xs leading-relaxed">
-        By creating an account, you agree to Shopora&apos;s <Link href="/" className="link">Conditions of Use</Link> and{' '}
+        By creating an account, you agree to Kyro&apos;s <Link href="/" className="link">Conditions of Use</Link> and{' '}
         <Link href="/" className="link">Privacy Notice</Link>.
       </p>
       <hr className="my-5 border-line" />

@@ -16,7 +16,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
       <SignInForm next={next} />
       <div className="relative my-6 text-center text-sm text-muted">
         <span className="absolute inset-x-0 top-1/2 border-t border-line" />
-        <span className="relative bg-page px-3">New to Shopora?</span>
+        <span className="relative bg-page px-3">New to Kyro?</span>
       </div>
       <Link href={`/register?next=${encodeURIComponent(next)}`} className="btn-secondary w-full py-3">
         Create your account

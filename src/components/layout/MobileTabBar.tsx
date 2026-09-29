@@ -37,7 +37,7 @@ export function MobileTabBar({ signedIn }: { signedIn: boolean }) {
               aria-current={t.active ? 'page' : undefined}
               className={`relative flex flex-col items-center gap-0.5 pt-2 pb-1.5 text-[11px] font-semibold transition-colors ${t.active ? 'text-brand' : 'text-[#64748b]'}`}
             >
-              <span className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${t.active ? 'bg-brand-50' : ''}`}>
+              <span className={`flex h-8 w-12 items-center justify-center rounded-full transition duration-200 active:scale-90 ${t.active ? 'bg-brand-50' : ''}`}>
                 <svg aria-hidden viewBox="0 0 24 24" className={`h-[22px] w-[22px] stroke-current stroke-2 ${t.active && t.label !== 'Cart' && t.label !== 'Shop' ? 'fill-current' : 'fill-none'}`}>
                   <path d={t.d} strokeLinejoin="round" strokeLinecap="round" />
                   {t.label === 'Cart' && (
@@ -50,7 +50,7 @@ export function MobileTabBar({ signedIn }: { signedIn: boolean }) {
               </span>
               {t.label}
               {t.badge > 0 && (
-                <span className="absolute top-1 left-1/2 ml-2 min-w-[18px] rounded-full bg-coral px-1 text-center text-[10px] leading-[18px] font-bold text-white ring-2 ring-white">
+                <span key={t.badge} className="count-badge absolute top-1 left-1/2 ml-2 ring-2 ring-white">
                   {t.badge > 99 ? '99+' : t.badge}
                 </span>
               )}

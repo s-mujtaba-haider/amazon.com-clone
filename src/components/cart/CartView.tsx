@@ -3,15 +3,19 @@
 import Link from 'next/link';
 import { FREE_SHIPPING_MIN, money } from '@/lib/format';
 import type { CartItem } from '@/lib/types';
+import { QuantityPicker } from '@/components/product/QuantityPicker';
 import { MAX_QTY, useCart } from './CartProvider';
 
 export function CartView({ signedIn }: { signedIn: boolean }) {
   const { items, saved, ready, count, subtotal, setQty, remove, saveForLater, moveToCart, removeSaved } = useCart();
 
   if (!ready) {
-    return <div className="gutter py-6" aria-busy="true">
-        <div className="skeleton h-80 rounded-3xl" />
-      </div>;
+    return (
+      <div className="gutter flex flex-col gap-5 py-5 sm:py-8 lg:flex-row" aria-busy="true">
+        <div className="skeleton h-80 flex-1 rounded-3xl" />
+        <div className="skeleton h-48 rounded-3xl lg:w-[360px]" />
+      </div>
+    );
   }
 
   const toFree = FREE_SHIPPING_MIN - subtotal;
@@ -20,41 +24,41 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
   return (
     <div className="gutter flex flex-col gap-5 py-5 sm:py-8 lg:flex-row lg:items-start xl:gap-8">
       <div className="min-w-0 flex-1 space-y-5">
-        <section className="card">
+        <section className="card" data-reveal>
           {items.length === 0 ? (
-            <div className="flex flex-col items-center gap-6 py-6 sm:flex-row">
-              <svg aria-hidden viewBox="0 0 120 90" className="h-32 w-44 shrink-0">
-                <path d="M8 14h18l14 48h58l12-36H34" fill="none" stroke="#febd69" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" />
-                <circle cx="46" cy="78" r="7" fill="#232f3e" />
-                <circle cx="90" cy="78" r="7" fill="#232f3e" />
-              </svg>
+            <div className="flex flex-col items-center gap-5 py-6 text-center sm:flex-row sm:text-left">
+              <span className="empty-icon h-28 w-28 shrink-0">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-12 w-12 fill-none stroke-brand stroke-[1.6]">
+                  <path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.4-1.1L21 8H6.3" strokeLinejoin="round" strokeLinecap="round" />
+                  <circle cx="9.5" cy="19.5" r="1.4" />
+                  <circle cx="17" cy="19.5" r="1.4" />
+                </svg>
+              </span>
               <div>
-                <h1 className="text-2xl font-extrabold">Your cart is empty</h1>
-                <Link href="/s?deals=1&sort=discount" className="link text-sm">
-                  Shop today&apos;s deals
-                </Link>
-                {!signedIn && (
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <Link href="/signin?next=/cart" className="btn-cta">
-                      Sign in to your account
+                <h1 className="page-title">Your cart is empty</h1>
+                <p className="mt-1 text-sm text-muted">Fill it with something you love.</p>
+                <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
+                  <Link href="/s?deals=1&sort=discount" className="btn-cta">
+                    Shop today&apos;s deals
+                  </Link>
+                  {!signedIn && (
+                    <Link href="/signin?next=/cart" className="btn-secondary">
+                      Sign in to see your cart
                     </Link>
-                    <Link href="/register?next=/cart" className="btn-secondary">
-                      Sign up now
-                    </Link>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           ) : (
             <>
               <div className="flex items-end justify-between border-b border-line pb-2">
-                <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Shopping cart</h1>
+                <h1 className="page-title">Shopping cart</h1>
                 <span className="hidden text-sm text-muted sm:block">Price</span>
               </div>
               <ul>
                 {items.map(i => (
                   <CartRow key={i.id} item={i}>
-                    <QtyStepper qty={i.qty} max={Math.min(MAX_QTY, i.stock)} onChange={q => setQty(i.id, q)} />
+                    <QuantityPicker size="sm" value={i.qty} max={Math.min(MAX_QTY, i.stock)} onChange={q => setQty(i.id, q)} onRemove={() => remove(i.id)} />
                     <Sep />
                     <button className="link" onClick={() => remove(i.id)}>Delete</button>
                     <Sep />
@@ -70,8 +74,8 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
         </section>
 
         {saved.length > 0 && (
-          <section id="saved" className="card scroll-mt-32">
-            <h2 className="border-b border-line pb-2 text-xl font-bold">Saved for later ({saved.length} {saved.length === 1 ? 'item' : 'items'})</h2>
+          <section id="saved" data-reveal className="card scroll-mt-32">
+            <h2 className="section-title title-bar mb-2 border-b border-line pb-2">Saved for later ({saved.length} {saved.length === 1 ? 'item' : 'items'})</h2>
             <ul>
               {saved.map(i => (
                 <CartRow key={i.id} item={i}>
@@ -88,11 +92,11 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
       </div>
 
       {items.length > 0 && (
-        <aside className="card w-full space-y-4 lg:sticky lg:top-36 lg:w-[360px]">
+        <aside data-reveal="right" className="card w-full space-y-4 lg:sticky lg:top-36 lg:w-[360px]">
           {toFree > 0 ? (
             <div className="text-sm">
-              <div className="mb-1 h-2 overflow-hidden rounded-full bg-[#e3e6e6]">
-                <div className="h-full bg-success" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_MIN) * 100)}%` }} />
+              <div className="mb-2 h-2 overflow-hidden rounded-full bg-[#eef0f6]">
+                <div className="h-full rounded-full bg-gradient-to-r from-brand to-coral transition-[width] duration-700 ease-out" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_MIN) * 100)}%` }} />
               </div>
               Add <b className="text-deal">{money(toFree)}</b> of eligible items to your order to qualify for FREE delivery.
             </div>
@@ -100,7 +104,7 @@ export function CartView({ signedIn }: { signedIn: boolean }) {
             <p className="flex gap-1 text-sm text-success">
               <span aria-hidden>✔</span>
               <span>
-                Your order qualifies for <b>FREE delivery</b>. <span className="text-[#0f1111]">Choose this option at checkout.</span>
+                Your order qualifies for <b>FREE delivery</b>. <span className="text-ink">Choose this option at checkout.</span>
               </span>
             </p>
           )}
@@ -122,10 +126,10 @@ function Sep() {
 
 function CartRow({ item, children }: { item: CartItem; children: React.ReactNode }) {
   return (
-    <li className="flex gap-4 border-b border-line py-5 last:border-0">
+    <li className="flex animate-[fade-up_.35s_ease-out_both] gap-4 border-b border-line py-5 last:border-0">
       <Link href={`/dp/${item.id}`} className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-b from-[#f6f7fb] to-[#eef0f7] p-2 sm:h-36 sm:w-36">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.thumbnail} alt={item.title} className="max-h-full max-w-full object-contain mix-blend-multiply" />
+        <img src={item.thumbnail} alt={item.title} className="max-h-full max-w-full object-contain mix-blend-multiply transition duration-500 hover:scale-105" />
       </Link>
       <div className="min-w-0 flex-1">
         <div className="flex justify-between gap-4">
@@ -140,25 +144,5 @@ function CartRow({ item, children }: { item: CartItem; children: React.ReactNode
         <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">{children}</div>
       </div>
     </li>
-  );
-}
-
-function QtyStepper({ qty, max, onChange }: { qty: number; max: number; onChange: (q: number) => void }) {
-  return (
-    <div className="flex items-center overflow-hidden rounded-full bg-[#f3f4f8] ring-1 ring-line">
-      <button aria-label={qty === 1 ? 'Delete item' : 'Decrease quantity'} onClick={() => onChange(qty - 1)} className="flex h-7 w-8 items-center justify-center hover:bg-brand-50">
-        {qty === 1 ? (
-          <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-[#0f1111]">
-            <path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Z" />
-          </svg>
-        ) : (
-          '−'
-        )}
-      </button>
-      <span className="w-8 text-center text-sm font-bold" aria-live="polite">{qty}</span>
-      <button aria-label="Increase quantity" disabled={qty >= max} onClick={() => onChange(qty + 1)} className="flex h-7 w-8 items-center justify-center hover:bg-brand-50 disabled:opacity-30">
-        +
-      </button>
-    </div>
   );
 }

@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { HeroCarousel, type Slide } from '@/components/home/HeroCarousel';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductRail } from '@/components/product/ProductRail';
-import { bestSellers, brands, byCategory, categoryLabel, getProduct, getProducts, topDeals } from '@/lib/products';
+import { BrandMarquee } from '@/components/home/BrandMarquee';
+import { DealCountdown } from '@/components/home/DealCountdown';
+import { CountUp } from '@/components/motion/CountUp';
+import { TiltCard } from '@/components/motion/TiltCard';
+import { bestSellers, brands, byCategory, catalogStats, categoryLabel, getProduct, getProducts, topDeals } from '@/lib/products';
 import { deliveryDate } from '@/lib/format';
 import { currentUser } from '@/lib/session';
 
@@ -49,12 +53,13 @@ const SPOTLIGHTS = [
   { title: 'Accessorize', text: 'Watches, bags and sunglasses to finish the look.', href: '/s?category=womens-watches', bg: 'linear-gradient(135deg,#4c1d95,#7c3aed)', ids: [190, 172, 154] },
 ];
 
-function SectionHead({ title, subtitle, href, cta = 'See all' }: { title: string; subtitle?: string; href?: string; cta?: string }) {
+function SectionHead({ title, subtitle, href, cta = 'See all', extra }: { title: string; subtitle?: string; href?: string; cta?: string; extra?: React.ReactNode }) {
   return (
     <div className="mb-3 flex items-end justify-between gap-4 sm:mb-4">
-      <div>
-        <h2 className="section-title">{title}</h2>
-        {subtitle && <p className="mt-0.5 hidden text-sm text-muted sm:block">{subtitle}</p>}
+      <div className="min-w-0">
+        <h2 className="section-title title-bar">{title}</h2>
+        {subtitle && <p className="mt-0.5 hidden pl-3 text-sm text-muted sm:block">{subtitle}</p>}
+        {extra && <div className="mt-2 pl-3">{extra}</div>}
       </div>
       {href && (
         <Link href={href} className="group inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-ink shadow-[var(--shadow-soft)] transition hover:bg-ink hover:text-white">
@@ -73,17 +78,19 @@ export default async function Home() {
   const best = bestSellers(24);
   const dealHero = deals[0];
   const newTech = getProduct(160)!;
-  const BRANDS = brands(24);
+  const BRANDS = brands(40);
+  const stats = catalogStats();
 
   return (
     <div className="gutter space-y-8 py-4 sm:space-y-12 sm:py-6">
+      <h1 className="sr-only">Kyro: shop electronics, fashion, beauty, home and more</h1>
       {/* Hero bento */}
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)]">
         <HeroCarousel slides={SLIDES} />
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-1 lg:grid-rows-2">
-          <Link href="/s?deals=1&sort=discount" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-[#fff1eb] to-[#ffe0d2] p-4 sm:p-6">
+          <Link href="/s?deals=1&sort=discount" data-reveal="right" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-[#fff1eb] to-[#ffe0d2] p-4 sm:p-6">
             <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
-              <span className="rounded-full bg-deal px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-white sm:text-[11px]">Up to {Math.round(dealHero.discountPercentage)}% off</span>
+              <span className="inline-block animate-[bounce-in_.6s_.5s_both] rounded-full bg-deal px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-white sm:text-[11px]">Up to {Math.round(dealHero.discountPercentage)}% off</span>
               <h3 className="mt-2 text-base leading-tight font-extrabold text-ink sm:text-2xl">Deals of the day</h3>
               <p className="mt-1 hidden text-sm text-[#7c2d12] sm:block">Fresh markdowns across every department.</p>
               <span className="mt-2 inline-block text-sm font-bold text-deal group-hover:underline sm:mt-3">Shop deals →</span>
@@ -91,9 +98,9 @@ export default async function Home() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={dealHero.thumbnail} alt="" className="absolute -right-3 -bottom-3 h-24 w-24 object-contain mix-blend-multiply transition duration-500 group-hover:scale-110 sm:h-40 sm:w-40 lg:h-36 lg:w-36 xl:h-44 xl:w-44" />
           </Link>
-          <Link href="/s?category=tablets" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-3 p-4 text-white sm:p-6">
+          <Link href="/s?category=tablets" data-reveal="right" className="group relative flex overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-3 p-4 text-white sm:p-6">
             <div className="relative z-10 max-w-[70%] sm:max-w-[60%]">
-              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap sm:text-[11px]">New in tech</span>
+              <span className="inline-block animate-[bounce-in_.6s_.65s_both] rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap sm:text-[11px]">New in tech</span>
               <h3 className="mt-2 text-base leading-tight font-extrabold sm:text-2xl">Tablets for work &amp; play</h3>
               <p className="mt-1 hidden text-sm text-white/70 sm:block">From {`$${Math.min(...byCategory('tablets').map(p => p.price)).toFixed(0)}`}. Delivered {delivery.split(', ')[0]}.</p>
               <span className="mt-2 inline-block text-sm font-bold text-[#b9a8ff] group-hover:underline sm:mt-3">Explore →</span>
@@ -107,7 +114,7 @@ export default async function Home() {
       {/* Perks strip */}
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {PERKS.map((p, i) => (
-          <li key={p.title} data-reveal data-perk style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="group flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4">
+          <li key={p.title} data-reveal="zoom" data-perk style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="group flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4">
             <span className="tile-pop flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 transition group-hover:bg-brand sm:h-12 sm:w-12">
               <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-brand stroke-2 transition group-hover:stroke-white sm:h-6 sm:w-6">
                 <path d={p.d} strokeLinecap="round" strokeLinejoin="round" />
@@ -121,22 +128,8 @@ export default async function Home() {
         ))}
       </ul>
 
-      {/* Brand ticker */}
-      <section aria-label="Popular brands" data-reveal className="relative overflow-hidden rounded-2xl bg-white py-4 shadow-[var(--shadow-soft)]">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
-        <div className="no-scrollbar flex gap-3 overflow-x-auto px-4">
-          {BRANDS.map(b => (
-            <Link
-              key={b}
-              href={`/s?brand=${encodeURIComponent(b)}`}
-              className="rounded-full bg-[#f5f6fa] px-5 py-2 text-sm font-bold whitespace-nowrap text-[#475569] transition hover:bg-brand hover:text-white"
-            >
-              {b}
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Brand marquee */}
+      <BrandMarquee brands={BRANDS} />
 
       {/* Categories */}
       <section data-reveal>
@@ -145,7 +138,7 @@ export default async function Home() {
           {CATEGORY_TILES.map(({ slug, tint }, i) => {
             const p = byCategory(slug, 1)[0];
             return (
-              <li key={slug} data-reveal style={{ '--reveal-delay': `${(i % 9) * 40}ms` } as React.CSSProperties}>
+              <li key={slug} data-reveal="zoom" style={{ '--reveal-delay': `${(i % 9) * 40}ms` } as React.CSSProperties}>
                 <Link href={`/s?category=${slug}`} className="tile-pop group flex flex-col items-center gap-2 rounded-2xl bg-white p-2.5 text-center shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:p-3">
                   <span className="flex aspect-square w-full items-center justify-center rounded-xl" style={{ background: tint }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -161,7 +154,7 @@ export default async function Home() {
 
       {/* Deals rail */}
       <section data-reveal className="rounded-3xl bg-gradient-to-br from-[#fff5f0] via-white to-[#f4f1ff] p-3 ring-1 ring-black/[.03] sm:p-6">
-        <SectionHead title="🔥 Today's biggest deals" subtitle="Sorted by discount, refreshed daily" href="/s?deals=1&sort=discount" />
+        <SectionHead title="🔥 Today's biggest deals" subtitle="Sorted by discount, refreshed daily" href="/s?deals=1&sort=discount" extra={<DealCountdown />} />
         <ProductRail>
           {deals.map((p, i) => (
             <ProductCard key={p.id} p={p} deliveryLabel={delivery} priority={i < 4} index={i} />
@@ -172,7 +165,9 @@ export default async function Home() {
       {/* Spotlight banners */}
       <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {SPOTLIGHTS.map((s, i) => (
-          <Link key={s.title} href={s.href} data-reveal style={{ background: s.bg, '--reveal-delay': `${i * 100}ms` } as React.CSSProperties} className="group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-3xl p-5 text-white transition hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:min-h-[220px] sm:p-6">
+          <div key={s.title} data-reveal={i === 0 ? 'left' : i === 2 ? 'right' : 'zoom'} style={{ '--reveal-delay': `${i * 100}ms` } as React.CSSProperties}>
+          <TiltCard className="h-full rounded-3xl">
+          <Link href={s.href} style={{ background: s.bg }} className="group relative flex h-full min-h-[170px] flex-col justify-between overflow-hidden rounded-3xl p-5 text-white transition hover:shadow-[var(--shadow-lift)] sm:min-h-[220px] sm:p-6">
             <div className="relative z-10 max-w-[55%]">
               <h3 className="text-xl leading-tight font-extrabold sm:text-2xl">{s.title}</h3>
               <p className="mt-1.5 text-sm text-white/75">{s.text}</p>
@@ -193,8 +188,29 @@ export default async function Home() {
               ))}
             </div>
           </Link>
+          </TiltCard>
+          </div>
         ))}
       </div>
+
+      {/* Stats band */}
+      <section data-reveal="zoom" aria-label="Kyro in numbers" className="relative overflow-hidden rounded-3xl bg-[linear-gradient(120deg,#1b1250_0%,#3b22c2_45%,#b24dff_75%,#ff6b3d_110%)] px-5 py-7 text-white sm:px-10 sm:py-10">
+        <span aria-hidden className="absolute -top-16 -left-10 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+        <span aria-hidden className="absolute -right-10 -bottom-20 h-64 w-64 rounded-full bg-coral/30 blur-3xl" />
+        <dl className="relative grid grid-cols-2 gap-y-6 text-center lg:grid-cols-4">
+          {[
+            { label: 'Products in stock', node: <CountUp value={stats.products} suffix="+" /> },
+            { label: 'Brands to explore', node: <CountUp value={stats.brands} /> },
+            { label: 'Departments', node: <CountUp value={stats.categories} /> },
+            { label: 'Average rating', node: <CountUp value={stats.avgRating} decimals={1} suffix="★" /> },
+          ].map((x, i) => (
+            <div key={x.label} className={`flex flex-col-reverse px-2 ${i % 2 ? 'border-l border-white/15' : ''} ${i === 2 ? 'lg:border-l' : ''}`}>
+              <dt className="mt-1 text-xs font-medium text-white/70 sm:text-sm">{x.label}</dt>
+              <dd className="text-3xl font-extrabold tracking-tight sm:text-5xl">{x.node}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
       {/* Best sellers grid (fills any width) */}
       <section>
@@ -213,7 +229,7 @@ export default async function Home() {
           <span aria-hidden className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-coral/30 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div>
-              <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Sign in for a better Shopora</h2>
+              <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Sign in for a better Kyro</h2>
               <p className="mt-2 max-w-xl text-white/70">Track orders, keep a wishlist, reorder in one tap and check out in seconds.</p>
             </div>
             <div className="flex w-full gap-3 sm:w-auto">

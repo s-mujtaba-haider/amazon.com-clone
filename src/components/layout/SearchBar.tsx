@@ -37,11 +37,11 @@ function DeptPicker({ categories, value, onChange, onOpen }: { categories: Cat[]
 
   useEffect(() => {
     if (!open) return;
-    const onDown = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
-    document.addEventListener('mousedown', onDown);
+    const onDown = (e: PointerEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    document.addEventListener('pointerdown', onDown);
     // focus the selected option when opening
     requestAnimationFrame(() => ref.current?.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus());
-    return () => document.removeEventListener('mousedown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
   }, [open]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -94,9 +94,9 @@ function DeptPicker({ categories, value, onChange, onOpen }: { categories: Cat[]
           id={panelId}
           role="listbox"
           aria-label="Departments"
-          className="absolute top-[calc(100%+10px)] left-0 z-[60] w-[min(640px,calc(100vw-2rem))] origin-top-left animate-[pop-in_.18s_ease-out] rounded-3xl bg-white p-3 text-ink shadow-[var(--shadow-lift)] ring-1 ring-black/5"
+          className="popover absolute top-[calc(100%+8px)] left-0 z-[60] w-[min(640px,calc(100vw-2rem))] origin-top-left p-3"
         >
-          <p className="px-2 pt-1 pb-2 text-[11px] font-bold tracking-wider text-muted uppercase">Search in</p>
+          <p className="popover-label">Search in</p>
           <div className="grid max-h-[min(420px,60vh)] grid-cols-2 gap-1.5 overflow-y-auto pr-1 lg:grid-cols-3">
             {all.map(c => {
               const on = c.slug === value;
@@ -110,7 +110,7 @@ function DeptPicker({ categories, value, onChange, onOpen }: { categories: Cat[]
                     onChange(c.slug);
                     setOpen(false);
                   }}
-                  className={`group flex items-center gap-2.5 rounded-2xl p-2 text-left text-sm font-semibold transition outline-none focus-visible:ring-2 focus-visible:ring-brand ${on ? 'bg-brand text-white' : 'hover:bg-brand-50 focus-visible:bg-brand-50'}`}
+                  className={`group flex items-center gap-2.5 rounded-xl p-2 text-left text-sm font-semibold transition outline-none focus-visible:ring-2 focus-visible:ring-brand ${on ? 'bg-brand text-white hover:bg-brand-600' : 'hover:bg-brand-50 focus-visible:bg-brand-50'}`}
                 >
                   <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${on ? 'bg-white/20' : 'bg-[#f3f4f8]'}`}>
                     {c.thumb ? (
@@ -177,11 +177,11 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
   }, [q, cat]);
 
   useEffect(() => {
-    const onDown = (e: MouseEvent) => {
+    const onDown = (e: PointerEvent) => {
       if (!boxRef.current?.contains(e.target as Node)) setOpen(false);
     };
-    document.addEventListener('mousedown', onDown);
-    return () => document.removeEventListener('mousedown', onDown);
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
   }, []);
 
   function go(term: string) {
@@ -234,7 +234,7 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
           }
         }}
         placeholder={catLabel ? `Search in ${catLabel}` : 'Search products, brands and more'}
-        aria-label="Search Shopora"
+        aria-label="Search Kyro"
         role="combobox"
         aria-expanded={showSuggestions || showTrending}
         aria-controls={listId}
@@ -262,10 +262,10 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
       </button>
 
       {(showSuggestions || showTrending) && (
-        <div className="absolute top-[calc(100%+10px)] right-0 left-0 z-50 origin-top animate-[pop-in_.16s_ease-out] overflow-hidden rounded-3xl bg-white text-ink shadow-[var(--shadow-lift)] ring-1 ring-black/5">
+        <div className="popover absolute top-[calc(100%+8px)] right-0 left-0 overflow-hidden">
           {showTrending ? (
             <div className="p-4">
-              <p className="mb-2.5 text-[11px] font-bold tracking-wider text-muted uppercase">Trending searches</p>
+              <p className="popover-label">Trending searches</p>
               <div className="flex flex-wrap gap-2">
                 {TRENDING.map(t => (
                   <button
@@ -294,7 +294,7 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
                   go(q);
                 }}
                 onMouseEnter={() => setActive(0)}
-                className={`mx-2 flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5 text-sm ${active === 0 ? 'bg-brand-50' : ''}`}
+                className={`mx-2 flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${active === 0 ? 'bg-brand-50' : ''}`}
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white">
                   <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[2.5]">
@@ -321,7 +321,7 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
                   }}
                   onMouseEnter={() => setActive(i + 1)}
                   style={{ animationDelay: `${i * 30}ms` }}
-                  className={`mx-2 flex animate-[fade-up_.25s_ease-out_both] cursor-pointer items-center gap-3 rounded-2xl px-3 py-2 text-sm ${active === i + 1 ? 'bg-brand-50' : ''}`}
+                  className={`mx-2 flex animate-[fade-up_.25s_ease-out_both] cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm ${active === i + 1 ? 'bg-brand-50' : ''}`}
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f3f4f8]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -331,7 +331,7 @@ export function SearchBar({ categories }: { categories: Cat[] }) {
                     <span className="block truncate">
                       <Highlight text={s.title} q={term} />
                     </span>
-                    <span className="block text-xs text-muted">in {s.category}</span>
+                    <span className="block text-xs text-muted">in {categories.find(c => c.slug === s.category)?.label ?? s.category}</span>
                   </span>
                   <b className="shrink-0 text-sm">${s.price.toFixed(2)}</b>
                 </li>

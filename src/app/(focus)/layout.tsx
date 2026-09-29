@@ -13,7 +13,7 @@ export default function FocusLayout({ children }: { children: React.ReactNode })
           <Link href="/" className="link">Privacy Notice</Link>
           <Link href="/" className="link">Help</Link>
         </div>
-        <p className="mt-2">Shopora is a portfolio demo. No real payments are taken.</p>
+        <p className="mt-2">Kyro is a portfolio demo. No real payments are taken.</p>
       </footer>
     </>
   );

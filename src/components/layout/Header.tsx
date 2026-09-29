@@ -21,7 +21,7 @@ export async function Header() {
           <SideMenu categories={cats} userName={user?.name ?? null} />
         </Suspense>
 
-        <Link href="/" className="shrink-0 rounded-lg px-1 py-1 text-[22px] leading-none sm:text-2xl" aria-label="Shopora home">
+        <Link href="/" className="shrink-0 rounded-lg px-1 py-1 text-[22px] leading-none sm:text-2xl" aria-label="Kyro home">
           <Logo />
         </Link>
 

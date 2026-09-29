@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /*
- * Shopora design tokens. Old token names (nav, cta, link, deal…) are kept so every
+ * Kyro design tokens. Old token names (nav, cta, link, deal…) are kept so every
  * component re-themes from here; new names (ink, brand, coral…) are used by the redesign.
  */
 @theme {
@@ -57,6 +57,13 @@
   }
   ::selection {
     background: var(--color-brand-100);
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    accent-color: var(--color-brand);
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
   }
 }
 
@@ -114,6 +121,49 @@
   }
   .section-title {
     @apply text-lg font-extrabold tracking-tight sm:text-2xl;
+  }
+  /* h1 on every page */
+  .page-title {
+    @apply text-2xl font-extrabold tracking-tight sm:text-3xl;
+  }
+  .breadcrumb {
+    @apply flex flex-wrap items-center gap-1.5 text-sm text-muted;
+  }
+  .breadcrumb a {
+    @apply transition-colors hover:text-brand;
+  }
+  /* every floating panel (menus, dropdowns, suggestions) shares one look and one entrance */
+  .popover {
+    @apply z-50 origin-top animate-[pop-in_.2s_cubic-bezier(.2,.8,.2,1)] rounded-2xl bg-white text-ink shadow-[var(--shadow-lift)] ring-1 ring-black/5;
+  }
+  .popover-label {
+    @apply px-1 pb-2 text-[11px] font-bold tracking-wider text-muted uppercase;
+  }
+  /* option rows inside popovers */
+  .menu-item {
+    @apply flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors outline-none hover:bg-brand-50 focus-visible:bg-brand-50;
+  }
+  .menu-item-on {
+    @apply bg-brand text-white hover:bg-brand-600 focus-visible:bg-brand-600;
+  }
+  /* dimmed backdrop behind drawers and sheets */
+  .backdrop {
+    @apply absolute inset-0 animate-[fade-in_.2s_ease-out] cursor-default bg-ink/55 backdrop-blur-sm;
+  }
+  /* round close (×) button used by drawers, sheets and toasts */
+  .icon-btn {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl leading-none transition hover:rotate-90;
+  }
+  /* counter bubble on header/tab-bar icons */
+  .count-badge {
+    @apply flex h-[18px] min-w-[18px] animate-[bump_.4s_ease-out] items-center justify-center rounded-full bg-coral px-1 text-[10px] leading-none font-bold text-white;
+  }
+  /* white "empty state" panel */
+  .empty-state {
+    @apply mx-auto flex max-w-lg flex-col items-center rounded-3xl bg-white px-6 py-12 text-center shadow-[var(--shadow-soft)];
+  }
+  .empty-icon {
+    @apply flex h-20 w-20 animate-[bounce-in_.6s_both] items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-coral-50 text-4xl;
   }
 }
 
@@ -183,18 +233,13 @@
   }
 }
 
-/* scroll reveal: elements start hidden only once JS has marked the page as able to animate */
+/*
+ * scroll reveal: elements start hidden only once JS has marked the page as able to animate.
+ * RevealRoot plays the entrance with element.animate() (fill: both), which overrides this without
+ * writing any attribute, so React hydration never sees a difference.
+ */
 .js-reveal [data-reveal] {
   opacity: 0;
-  transform: translateY(40px) scale(0.97);
-  transition:
-    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-.js-reveal [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
 }
 
 /* sheen that sweeps across primary buttons on hover */
@@ -252,6 +297,122 @@
 }
 .grow-underline:hover {
   background-size: 100% 2px;
+}
+
+/* ---------- brand marquee ----------
+ * The track holds the list twice; sliding it by exactly half makes the loop seamless.
+ * Items use padding (not flex gap) so both halves are the same width. Pauses on hover/focus/touch.
+ */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+.marquee-reverse .marquee-track {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track,
+.marquee[data-paused] .marquee-track {
+  animation-play-state: paused;
+}
+
+/* reveal variants (data-reveal="left" | "right" | "zoom") are keyframes in RevealRoot */
+/* section headings: accent bar grows in once the section is revealed */
+.title-bar {
+  position: relative;
+  padding-left: 0.8rem;
+}
+.title-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #7c5cff, #ff6b3d);
+  transform-origin: top;
+}
+/* hidden until its section reveals; RevealRoot grows it in */
+.js-reveal [data-reveal] .title-bar::before {
+  transform: scaleY(0);
+}
+
+/* hero carousel: active dot fills over the autoplay interval */
+@keyframes fill-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+/* hero product images fly in when their slide becomes active */
+@keyframes fly-in {
+  from {
+    opacity: 0;
+    transform: translateX(60px) rotate(8deg) scale(0.9);
+  }
+}
+/* badge that pops in with a bounce */
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+/* digit flip for the deal countdown */
+@keyframes tick {
+  from {
+    opacity: 0;
+    transform: translateY(-40%);
+  }
+}
+
+/* quantity number slides in from the direction it changed */
+@keyframes qty-up {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+}
+@keyframes qty-down {
+  from {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+}
+
+/* 3D tilt set from JS via --rx/--ry (see TiltCard) */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* moving glare that follows the pointer inside a tilt card */
+.tilt-glare {
+  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.28), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tilt:hover .tilt-glare {
+  opacity: 1;
+}
+
+/* top-of-page scroll progress */
+.scroll-progress {
+  transform-origin: 0 50%;
+  transform: scaleX(var(--progress, 0));
 }
 
 /*
@@ -312,10 +473,33 @@
       opacity: 0;
     }
   }
-  .js-reveal [data-reveal] {
+  @keyframes fly-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes bounce-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes tick {
+    from {
+      opacity: 0.3;
+    }
+  }
+  @keyframes qty-up {
+    from {
+      opacity: 0.3;
+    }
+  }
+  @keyframes qty-down {
+    from {
+      opacity: 0.3;
+    }
+  }
+  .tilt {
     transform: none;
-    transition: opacity 0.7s ease;
-    transition-delay: var(--reveal-delay, 0ms);
   }
   .hover\:-translate-y-1:hover,
   .hover\:-translate-y-0\.5:hover {

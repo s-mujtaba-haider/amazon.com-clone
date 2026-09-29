@@ -32,7 +32,7 @@ export function NavChips() {
   const activeKey = pathname !== '/s' ? null : cat ?? (params.get('deals') ? 'deals' : params.get('sort') === 'rating' ? 'best' : null);
 
   return (
-    <div className="gutter no-scrollbar flex items-center gap-1.5 overflow-x-auto py-2 text-[13px] whitespace-nowrap">
+    <div className="gutter no-scrollbar flex items-center gap-1.5 overflow-x-auto py-2 text-[13px] whitespace-nowrap [mask-image:linear-gradient(90deg,#000_90%,transparent)] xl:[mask-image:none]">
       {LINKS.map(l => {
         const on = activeKey === l.key;
         return (
@@ -40,7 +40,7 @@ export function NavChips() {
             key={l.key}
             href={l.href}
             aria-current={on ? 'page' : undefined}
-            className={`rounded-full px-3 py-1.5 font-medium transition-colors ${on ? 'bg-white text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+            className={`rounded-full px-3 py-1.5 font-medium transition active:scale-95 ${on ? 'bg-white text-ink shadow-sm' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
           >
             {l.icon && <span aria-hidden className="mr-1">{l.icon}</span>}
             {l.label}

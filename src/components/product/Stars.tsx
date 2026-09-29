@@ -5,7 +5,7 @@ function Row({ size, filled }: { size: number; filled: boolean }) {
     <span className="flex">
       {[0, 1, 2, 3, 4].map(i => (
         <svg key={i} aria-hidden viewBox="0 0 24 24" width={size} height={size} className="shrink-0">
-          <path d={STAR} fill={filled ? '#de7921' : '#fff'} stroke="#de7921" strokeWidth="1.3" strokeLinejoin="round" />
+          <path d={STAR} fill={filled ? 'var(--color-star)' : '#eef0f6'} stroke={filled ? 'var(--color-star)' : '#d9dde8'} strokeWidth="1.3" strokeLinejoin="round" />
         </svg>
       ))}
     </span>

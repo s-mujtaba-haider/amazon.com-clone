@@ -22,7 +22,7 @@ export function AddedToCartToast() {
   if (!lastAdded) return null;
 
   return (
-    <div role="status" aria-live="polite" className="fixed top-3 right-3 z-[70] w-[min(380px,calc(100vw-1.5rem))] animate-[toast-in_.2s_ease-out] rounded-3xl bg-white p-4 shadow-[var(--shadow-lift)] ring-1 ring-black/5 sm:top-5 sm:right-5">
+    <div role="status" aria-live="polite" className="fixed top-3 right-3 z-[70] w-[min(380px,calc(100vw-1.5rem))] animate-[toast-in_.3s_cubic-bezier(.2,.8,.2,1)] rounded-3xl bg-white p-4 shadow-[var(--shadow-lift)] ring-1 ring-black/5 sm:top-5 sm:right-5">
       <div className="flex gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={lastAdded.thumbnail} alt="" className="h-16 w-16 shrink-0 rounded-2xl bg-[#f3f4f8] object-contain p-1 mix-blend-multiply" />
@@ -38,7 +38,7 @@ export function AddedToCartToast() {
             Cart subtotal ({count} {count === 1 ? 'item' : 'items'}): <b>{money(subtotal)}</b>
           </p>
         </div>
-        <button onClick={dismissAdded} aria-label="Dismiss" className="self-start text-xl leading-none text-muted hover:text-black">
+        <button onClick={dismissAdded} aria-label="Dismiss" className="icon-btn -mt-1 -mr-1 h-8 w-8 text-muted hover:bg-[#f5f6fa] hover:text-ink">
           ×
         </button>
       </div>

@@ -15,8 +15,8 @@ export default async function CheckoutPage() {
   return (
     <>
       <header className="bg-ink text-white">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-4 py-3.5">
-          <Link href="/" className="text-2xl">
+        <div className="gutter flex max-w-[1280px] items-center justify-between py-3.5">
+          <Link href="/" className="text-2xl" aria-label="Kyro home">
             <Logo />
           </Link>
           <h1 className="text-lg font-bold sm:text-xl">Checkout</h1>

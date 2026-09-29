@@ -9,15 +9,23 @@ export function WishlistView() {
   const { items, ready, remove } = useWishlist();
   const { add } = useCart();
 
-  if (!ready) return <div className="gutter py-6" aria-busy="true">
-        <div className="skeleton h-80 rounded-3xl" />
-      </div>;
+  if (!ready)
+    return (
+      <div className="gutter py-6 sm:py-8" aria-busy="true">
+        <div className="skeleton mb-6 h-10 w-56 rounded-xl" />
+        <div className="product-grid">
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="skeleton aspect-[3/4] rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
 
   return (
     <div className="gutter py-6 sm:py-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Your wishlist</h1>
+          <h1 className="page-title">Your wishlist</h1>
           <p className="mt-1 text-sm text-muted">
             {items.length} saved {items.length === 1 ? 'item' : 'items'} · saved on this device
           </p>
@@ -33,8 +41,8 @@ export function WishlistView() {
       </div>
 
       {items.length === 0 ? (
-        <div className="mx-auto max-w-lg rounded-3xl bg-white p-10 text-center shadow-[var(--shadow-soft)]">
-          <span aria-hidden className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-coral-50 text-4xl">♡</span>
+        <div className="empty-state" data-reveal>
+          <span aria-hidden className="empty-icon">💜</span>
           <h2 className="mt-5 text-xl font-extrabold">Nothing saved yet</h2>
           <p className="mt-2 text-muted">Tap the heart on any product to keep it here for later.</p>
           <Link href="/s?sort=rating" className="btn-cta mt-6 px-6 py-3">
@@ -43,13 +51,13 @@ export function WishlistView() {
         </div>
       ) : (
         <ul className="product-grid">
-          {items.map(i => (
-            <li key={i.id} className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-lift)]">
+          {items.map((i, n) => (
+            <li key={i.id} data-reveal style={{ '--reveal-delay': `${(n % 6) * 60}ms` } as React.CSSProperties} className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-soft)] ring-1 ring-black/[.03] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
               <Link href={`/dp/${i.id}`} className="relative flex aspect-square items-center justify-center bg-gradient-to-b from-[#f6f7fb] to-[#eef0f7] p-5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={i.thumbnail} alt={i.title} className="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" />
                 {i.discountPercentage >= 10 && (
-                  <span className="absolute top-2.5 left-2.5 rounded-full bg-deal px-2 py-0.5 text-[11px] font-bold text-white">-{Math.round(i.discountPercentage)}%</span>
+                  <span className="absolute top-2.5 left-2.5 rounded-full bg-deal px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">-{Math.round(i.discountPercentage)}%</span>
                 )}
               </Link>
               <div className="flex flex-1 flex-col gap-2 p-4">
@@ -69,7 +77,7 @@ export function WishlistView() {
                       'Unavailable'
                     )}
                   </button>
-                  <button className="btn-secondary px-3" aria-label={`Remove ${i.title} from wishlist`} onClick={() => remove(i.id)}>
+                  <button className="btn-secondary px-3 hover:border-deal/40 hover:bg-[#fff1f1] hover:text-deal" aria-label={`Remove ${i.title} from wishlist`} onClick={() => remove(i.id)}>
                     <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
                       <path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>

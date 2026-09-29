@@ -18,7 +18,7 @@ export function Price({
   return (
     <div>
       <div className="flex items-start gap-2">
-        {hasDeal && size === 'lg' && <span className="mt-1 rounded-lg bg-deal px-2 py-1 text-sm font-bold text-white">-{Math.round(discount)}%</span>}
+        {hasDeal && size === 'lg' && <span className="mt-1 rounded-full bg-deal px-2.5 py-1 text-sm font-bold text-white">-{Math.round(discount)}%</span>}
         <span className="flex items-start leading-none" aria-label={money(price)}>
           <span aria-hidden className="mt-1 text-xs">$</span>
           <span aria-hidden className={`${big} leading-none font-extrabold tracking-tight`}>{whole}</span>

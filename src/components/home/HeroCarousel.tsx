@@ -8,27 +8,28 @@ export type Slide = { eyebrow: string; title: string; subtitle: string; cta: str
 export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [autoplay, setAutoplay] = useState(false);
   const touchX = useRef<number | null>(null);
   const go = useCallback((d: number) => setI(x => (x + d + slides.length) % slides.length), [slides.length]);
 
-  useEffect(() => {
-    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const t = setInterval(() => go(1), 6000);
-    return () => clearInterval(t);
-  }, [paused, go]);
+  // Autoplay is driven by the active dot's fill animation: when it finishes, advance. Hover pauses
+  // both together, so the dot always shows exactly how long the slide has left.
+  useEffect(() => setAutoplay(!window.matchMedia('(prefers-reduced-motion: reduce)').matches), []);
 
   return (
     <section
       aria-roledescription="carousel"
       aria-label="Featured offers"
       className="group relative h-[250px] overflow-hidden rounded-3xl sm:h-[340px] xl:h-[420px] 2xl:h-[480px]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onPointerEnter={e => e.pointerType === 'mouse' && setPaused(true)}
+      onPointerLeave={e => e.pointerType === 'mouse' && setPaused(false)}
       onTouchStart={e => {
         touchX.current = e.touches[0].clientX;
         setPaused(true);
       }}
       onTouchEnd={e => {
+        // resume after a touch, otherwise one tap on mobile would stop autoplay for good
+        setPaused(false);
         const start = touchX.current;
         touchX.current = null;
         if (start === null) return;
@@ -60,7 +61,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
                 {s.cta} <span aria-hidden>→</span>
               </Link>
             </div>
-            <div className="relative flex shrink-0 items-center">
+            <div key={idx === i ? `img-on-${i}` : `img-off-${idx}`} className="relative flex shrink-0 items-center [&>*]:animate-[fly-in_.8s_cubic-bezier(.16,1,.3,1)_both] [&>*:nth-child(2)]:[animation-delay:120ms] [&>*:nth-child(3)]:[animation-delay:240ms]">
               {s.images.map((src, k) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -88,8 +89,18 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               aria-label={`Go to slide ${idx + 1}`}
               aria-current={idx === i}
               onClick={() => setI(idx)}
-              className={`h-2 rounded-full transition-all ${idx === i ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`}
-            />
+              className={`relative h-2 overflow-hidden rounded-full transition-all duration-300 ${idx === i ? (autoplay ? 'w-8 bg-white/40' : 'w-8 bg-white') : 'w-2 bg-white/50 hover:bg-white/80'}`}
+            >
+              {idx === i && autoplay && (
+                <span
+                  key={i}
+                  aria-hidden
+                  className="absolute inset-0 origin-left rounded-full bg-white"
+                  style={{ animation: 'fill-x 6s linear both', animationPlayState: paused ? 'paused' : 'running' }}
+                  onAnimationEnd={() => go(1)}
+                />
+              )}
+            </button>
           ))}
         </div>
         <button aria-label="Next slide" onClick={() => go(1)} className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/20 text-xl text-white backdrop-blur transition hover:bg-white/35 sm:flex">

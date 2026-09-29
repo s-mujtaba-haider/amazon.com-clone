@@ -1,4 +1,4 @@
-# Shopora: a marketplace storefront (Amazon-style clone)
+# Kyro: a marketplace storefront (Amazon-style clone)
 
 A working e-commerce storefront modeled on Amazon's shopping flow, with its own modern design:
 full-width layouts that fill any screen, and an app-like experience on phones. Built for the 8x assignment. The prompt-and-response record of how it was built is in

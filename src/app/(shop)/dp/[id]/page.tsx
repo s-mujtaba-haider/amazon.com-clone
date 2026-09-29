@@ -32,18 +32,15 @@ export default async function ProductPage({ params }: { params: Params }) {
   ].filter(Boolean) as string[];
 
   return (
-    <div className="gutter pb-12">
-      <nav aria-label="Breadcrumb" className="py-4 text-sm text-muted">
-        <Link href="/" className="hover:text-brand">Home</Link>{' › '}
-        <Link href={`/s?category=${p.category}`} className="hover:text-brand">
-          {categoryLabel(p.category)}
-        </Link>
+    <div className="gutter pb-24 md:pb-12">
+      <nav aria-label="Breadcrumb" className="breadcrumb py-4">
+        <Link href="/">Home</Link>
+        <span aria-hidden>›</span>
+        <Link href={`/s?category=${p.category}`}>{categoryLabel(p.category)}</Link>
         {p.brand && (
           <>
-            {' › '}
-            <Link href={`/s?category=${p.category}&brand=${encodeURIComponent(p.brand)}`} className="hover:text-brand">
-              {p.brand}
-            </Link>
+            <span aria-hidden>›</span>
+            <Link href={`/s?category=${p.category}&brand=${encodeURIComponent(p.brand)}`}>{p.brand}</Link>
           </>
         )}
       </nav>
@@ -51,10 +48,10 @@ export default async function ProductPage({ params }: { params: Params }) {
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_320px] xl:gap-8">
         <Gallery images={p.images} title={p.title} />
 
-        <div className="min-w-0">
+        <div className="min-w-0" data-reveal>
           {p.brand && <p className="mb-1 text-xs font-bold tracking-wider text-brand uppercase">{p.brand}</p>}
           <div className="flex items-start gap-3">
-            <h1 className="flex-1 text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl">{p.title}</h1>
+            <h1 className="page-title flex-1 leading-tight">{p.title}</h1>
             <HeartButton size="lg" className="shrink-0 ring-1 ring-line" item={{ id: p.id, title: p.title, price: p.price, thumbnail: p.thumbnail, stock: p.stock, brand: p.brand, discountPercentage: p.discountPercentage, rating: p.rating }} />
           </div>
           {p.brand && (
@@ -70,7 +67,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             </span>
           </a>
           {p.discountPercentage >= 15 && (
-            <span className="mt-2 inline-block rounded-sm bg-deal px-2 py-1 text-xs font-bold text-white">Limited time deal</span>
+            <span className="mt-2 inline-block animate-[bounce-in_.6s_.3s_both] rounded-full bg-deal px-2.5 py-1 text-xs font-bold text-white">Limited time deal</span>
           )}
           <hr className="my-3 border-line" />
           <Price price={p.price} discount={p.discountPercentage} size="lg" />
@@ -96,7 +93,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             </tbody>
           </table>
 
-          <h2 className="mt-6 text-lg font-extrabold">About this item</h2>
+          <h2 className="section-title title-bar mt-6">About this item</h2>
           <ul className="mt-3 space-y-2.5 text-[15px] leading-relaxed text-[#334155]">
             {bullets.map(b => (
               <li key={b} className="flex gap-2.5">
@@ -116,8 +113,8 @@ export default async function ProductPage({ params }: { params: Params }) {
         />
       </div>
 
-      <section className="mt-12">
-        <h2 className="section-title mb-4">You may also like</h2>
+      <section className="mt-12" data-reveal>
+        <h2 className="section-title title-bar mb-4">You may also like</h2>
         <ProductRail>
           {related(p, 16).map((r, i) => (
             <ProductCard key={r.id} p={r} deliveryLabel={deliveryDate(2)} index={i} />
@@ -127,8 +124,8 @@ export default async function ProductPage({ params }: { params: Params }) {
 
 
       <section id="reviews" className="mt-12 grid scroll-mt-36 gap-6 md:grid-cols-[320px_1fr] xl:gap-10">
-        <div className="h-fit rounded-3xl bg-white p-6 shadow-[var(--shadow-soft)] md:sticky md:top-36">
-          <h2 className="text-xl font-extrabold">Customer reviews</h2>
+        <div data-reveal="left" className="h-fit rounded-3xl bg-white p-6 shadow-[var(--shadow-soft)] md:sticky md:top-36">
+          <h2 className="section-title title-bar">Customer reviews</h2>
           <div className="mt-2 flex items-center gap-2">
             <Stars rating={p.rating} size={20} />
             <span className="text-lg">{p.rating.toFixed(1)} out of 5</span>
@@ -139,21 +136,21 @@ export default async function ProductPage({ params }: { params: Params }) {
               const pct = p.reviews.length ? Math.round((n / p.reviews.length) * 100) : 0;
               return (
                 <li key={star} className="flex items-center gap-3">
-                  <span className="w-12 text-link">{star} star</span>
+                  <span className="w-12 font-medium">{star} star</span>
                   <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#eef0f6]">
-                    <span className="block h-full rounded-full bg-gradient-to-r from-star to-coral" style={{ width: `${pct}%` }} />
+                    <span className="block h-full origin-left animate-[fill-x_1s_.3s_cubic-bezier(.2,.8,.2,1)_both] rounded-full bg-gradient-to-r from-star to-coral" style={{ width: `${pct}%` }} />
                   </span>
-                  <span className="w-10 text-right text-link">{pct}%</span>
+                  <span className="w-10 text-right text-muted">{pct}%</span>
                 </li>
               );
             })}
           </ul>
         </div>
         <div>
-          <h3 className="mb-4 text-lg font-extrabold">Top reviews</h3>
+          <h3 className="section-title mb-4">Top reviews</h3>
           <ul className="grid gap-3 xl:grid-cols-2">
             {p.reviews.map((r, i) => (
-              <li key={i} className="rounded-2xl bg-white p-5 shadow-[var(--shadow-soft)]">
+              <li key={i} data-reveal style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties} className="rounded-2xl bg-white p-5 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]">
                 <div className="flex items-center gap-2.5 text-sm font-semibold">
                   <span aria-hidden className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand-100 to-coral-50 font-bold text-brand-700">
                     {r.name[0]}
